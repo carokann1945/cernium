@@ -1,9 +1,11 @@
-import { cn } from '@/lib/utils';
+import EventLists from '@/features/period-tracker/ui/EventLists';
+import EventPeriodChart from '@/features/period-tracker/ui/EventPeriodChart';
 
 export default function Home() {
   return (
     <>
-      <h1 className={cn('font-pretendard text-[32px]')}>hello</h1>
+      <EventPeriodChart />
+      <EventLists />
     </>
   );
 }

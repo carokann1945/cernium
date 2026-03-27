@@ -40,8 +40,9 @@ export default function EventListsClient({ events }: Props) {
               'hover:scale-105 transition-all duration-200',
             )}>
             <a
-              className={cn('curosr-pointer w-full', 'flex flex-col gap-[8px]')}
+              className={cn('cursor-pointer w-full', 'flex flex-col gap-[8px]')}
               href={event.gms_url ?? '#'}
+              rel="noopener noreferrer"
               target="_blank">
               <figure className={cn('w-full h-[160px] relative')}>
                 {event.image_url && (
@@ -54,22 +55,25 @@ export default function EventListsClient({ events }: Props) {
                   />
                 )}
               </figure>
-              <span className={cn('font-bold')}>{event.name}</span>
+              <span className={cn('font-bold line-clamp-2 min-h-[56px]')}>{event.name}</span>
             </a>
-            <p className={cn('text-sm text-gray-300 break-keep')}>
-              {event.event_period ? `${formatEventPeriodToKST(event.event_period)} (KST)` : '기간 정보 없음'}
-            </p>
-            {event.kms_url ? (
-              <a
-                href={event.kms_url}
-                target="_blank"
-                className={cn('cursor-pointer px-[10px] py-px bg-custom-green rounded-md', 'self-start')}
-                type="button">
-                kms
-              </a>
-            ) : (
-              <button className={cn('px-[10px] py-px bg-red-400 rounded-md', 'self-start')}>gms only</button>
-            )}
+            <div className={cn('flex flex-col gap-[6px]')}>
+              <p className={cn('text-sm text-gray-300 break-keep')}>
+                {event.event_period ? `[KST] ${formatEventPeriodToKST(event.event_period)}` : '기간 정보 없음'}
+              </p>
+              {event.kms_url ? (
+                <a
+                  href={event.kms_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn('cursor-pointer px-[10px] py-px bg-custom-green rounded-md', 'self-start')}
+                  type="button">
+                  kms
+                </a>
+              ) : (
+                <button className={cn('px-[10px] py-px bg-red-400 rounded-md', 'self-start')}>gms only</button>
+              )}
+            </div>
           </li>
         ))}
       </ul>

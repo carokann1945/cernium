@@ -135,7 +135,7 @@ export default function EventPeriodChart() {
   const timeStr = now ? now.toTimeString().slice(0, 8) : '--:--:--';
 
   return (
-    <div className="flex flex-col bg-[#121316] text-white select-none">
+    <div className="flex flex-col bg-[#121316] text-white select-none mt-[18px]">
       {/* Top bar */}
       <div className="flex items-center justify-between px-5 py-4">
         <h2 className="text-2xl font-bold tracking-tight">Events</h2>

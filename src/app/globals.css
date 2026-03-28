@@ -1,8 +1,27 @@
 @import 'tailwindcss';
 
+.scrollbar-custom::-webkit-scrollbar {
+  height: 5px;
+}
+.scrollbar-custom::-webkit-scrollbar-button {
+  display: none;
+}
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #121316;
+  border-radius: 9999px;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 9999px;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
 @theme inline {
   --font-pretendard: var(--font-pretendard), sans-serif;
   --color-custom-nav-bg: #1d1f23;
   --color-custom-bg: #121316;
   --color-custom-green: #51bb86;
+  --color-custom-lightgray: #848589;
 }

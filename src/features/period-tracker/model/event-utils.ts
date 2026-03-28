@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
+import type { Event, ChartEvent } from '../types/event';
 
 type ParsedEventPeriod = {
   start: Temporal.ZonedDateTime;
@@ -7,7 +8,7 @@ type ParsedEventPeriod = {
 
 const UTC = 'UTC';
 const KST = 'Asia/Seoul';
-const DAY_ABBRS = ['일', '월', '화', '수', '목', '금', '토'];
+const DAY_ABBRS = ['월', '화', '수', '목', '금', '토', '일'];
 
 // "2026-02-04 00:00 (UTC)" → ZonedDateTime
 function parseUtcString(value: string): Temporal.ZonedDateTime {
@@ -64,9 +65,33 @@ export function formatEventPeriodToKST(eventPeriod: string): string {
 }
 
 function formatKST(zdt: Temporal.ZonedDateTime): string {
-  return `${pad(zdt.month)}.${pad(zdt.day)}(${DAY_ABBRS[zdt.dayOfWeek]}) ${pad(zdt.hour)}:${pad(zdt.minute)}`;
+  return `${pad(zdt.month)}.${pad(zdt.day)}(${DAY_ABBRS[zdt.dayOfWeek - 1]}) ${pad(zdt.hour)}:${pad(zdt.minute)}`;
 }
 
 function pad(n: number) {
   return String(n).padStart(2, '0');
+}
+
+// startDate, endDate가 있는 이벤트 객체 생성용
+export function toChartEvent(event: Event): ChartEvent | null {
+  if (!event.event_period) {
+    return null;
+  }
+
+  const parsed = parseEventPeriod(event.event_period);
+  if (!parsed) {
+    return null;
+  }
+
+  return {
+    id: event.id,
+    name: event.name,
+    startDate: parsed.start.withTimeZone(KST).toPlainDate(),
+    endDate: parsed.end.withTimeZone(KST).toPlainDate(),
+    gms_url: event.gms_url,
+  };
+}
+
+export function toChartEvents(events: Event[]): ChartEvent[] {
+  return events.map(toChartEvent).filter((event): event is ChartEvent => event !== null);
 }

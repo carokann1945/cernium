@@ -1,18 +1,66 @@
-import { Suspense } from 'react';
+'use client';
+
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { getCachedEvents } from '../model/events';
-import EventListsClient from './EventListsClient';
+import { useEventStore } from '../model/EventStore';
+import { formatEventPeriodToKST } from '../model/event-utils';
 
-export default async function EventLists() {
-  const events = await getCachedEvents();
+export default function EventListsClient() {
+  const ongoingEvents = useEventStore((store) => store.ongoingEvents);
 
-  if (events === null) {
-    return <p className={cn('w-full', 'mt-10', 'text-center')}>이벤트 데이터를 불러오지 못했습니다.</p>;
+  if (ongoingEvents.length === 0) {
+    return null;
   }
 
   return (
-    <Suspense fallback={<p className="w-full mt-10 text-center">이벤트를 불러오는 중...</p>}>
-      <EventListsClient events={events} />
-    </Suspense>
+    <section className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[50px]')}>
+      <ul className={cn('w-full', 'grid gap-3 grid-cols-[repeat(auto-fit,304px)] justify-center')}>
+        {ongoingEvents.map((event) => (
+          <li
+            key={event.id}
+            className={cn(
+              'w-[300px] min-h-[300px]',
+              'flex flex-col justify-between',
+              'bg-custom-nav-bg p-2 rounded-md',
+              'hover:scale-105 transition-all duration-200',
+            )}>
+            <a
+              className={cn('cursor-pointer w-full', 'flex flex-col gap-[8px]')}
+              href={event.gms_url ?? '#'}
+              rel="noopener noreferrer"
+              target="_blank">
+              <figure className={cn('w-full h-[160px] relative')}>
+                {event.image_url && (
+                  <Image
+                    className={cn('rounded-md object-cover')}
+                    src={`https://g.nexonstatic.com${event.image_url}`}
+                    alt={event.name}
+                    fill
+                    sizes="100"
+                  />
+                )}
+              </figure>
+              <span className={cn('font-bold line-clamp-2 min-h-[56px]')}>{event.name}</span>
+            </a>
+            <div className={cn('flex flex-col gap-[6px]')}>
+              <p className={cn('text-sm text-gray-300 break-keep')}>
+                {event.event_period ? `[KST] ${formatEventPeriodToKST(event.event_period)}` : '기간 정보 없음'}
+              </p>
+              {event.kms_url ? (
+                <a
+                  href={event.kms_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn('cursor-pointer px-[10px] py-px bg-custom-green rounded-md', 'self-start')}>
+                  kms
+                </a>
+              ) : (
+                <button className={cn('px-[10px] py-px bg-red-400 rounded-md', 'self-start')}>gms only</button>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

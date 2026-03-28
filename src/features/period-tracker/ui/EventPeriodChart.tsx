@@ -3,116 +3,33 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useEventStore } from '../model/EventStore';
 
 const COL_WIDTH = 40;
 const ROW_HEIGHT = 32;
 const ROW_GAP = 12;
 const HEADER_HEIGHT = 72;
 const PADDING_DAYS = 40;
-
-const DAY_ABBRS = ['일', '월', '화', '수', '목', '금', '토'];
+const DAY_ABBRS = ['월', '화', '수', '목', '금', '토', '일'];
 const MONTH_ABBRS = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
-// 목데이터 타입
-interface GameEvent {
-  id: number;
-  title: string;
-  startDate: string;
-  endDate: string;
-  color: string;
-}
-
-// 목데이터
-const MOCK_EVENTS: GameEvent[] = [
-  {
-    id: 1,
-    title: '낚싯대에 걸려온 어딘가 엉뚱한 보물 물고기',
-    startDate: '2026-03-20',
-    endDate: '2026-04-07',
-    color: '#2fa86a',
-  },
-  {
-    id: 2,
-    title: '거짓말 같은 스페셜 접속 보상',
-    startDate: '2026-03-20',
-    endDate: '2026-04-13',
-    color: '#4a8fd0',
-  },
-  {
-    id: 3,
-    title: '전이 로테이션 : 두 개의 어둠',
-    startDate: '2026-03-20',
-    endDate: '2026-04-14',
-    color: '#c44040',
-  },
-  {
-    id: 4,
-    title: '설렘 가득한 날씨와 함께, 일일 접속 보상',
-    startDate: '2026-03-01',
-    endDate: '2026-04-30',
-    color: '#c8a020',
-  },
-  {
-    id: 5,
-    title: '파트리지오의 비밀 상자와 함께, 특별한 상점 OPEN',
-    startDate: '2026-03-22',
-    endDate: '2026-03-31',
-    color: '#7b4fbf',
-  },
-  {
-    id: 6,
-    title: '협동 아토락시온에 도전하고, 추가 보상을 쟁취하라.',
-    startDate: '2026-03-24',
-    endDate: '2026-03-31',
-    color: '#b857a0',
-  },
-  {
-    id: 7,
-    title: '크론 왕국 최후의 왕태자 그 흔적을 찾아서',
-    startDate: '2026-03-01',
-    endDate: '2026-03-31',
-    color: '#c47a30',
-  },
-  {
-    id: 8,
-    title: '3월, 매일 찾아오는 접속 보상',
-    startDate: '2026-03-01',
-    endDate: '2026-03-30',
-    color: '#4a90c0',
-  },
-  {
-    id: 9,
-    title: '매일 받아가는 특별 보상, 달콤한 데일리 스페셜 패스',
-    startDate: '2026-03-20',
-    endDate: '2026-04-07',
-    color: '#b89020',
-  },
-  {
-    id: 10,
-    title: '[기간 연장] 올비아 아카데미 OPEN, 입학 기념 도전과제',
-    startDate: '2026-03-20',
-    endDate: '2026-04-07',
-    color: '#d44f8a',
-  },
-  {
-    id: 11,
-    title: '올비아 아카데미 개교, 아카데미 패스 (최종 수정 : 2025-01-28 14:55)',
-    startDate: '2026-02-15',
-    endDate: '2026-04-14',
-    color: '#d4703a',
-  },
-];
-
 export default function EventPeriodChart() {
+  const chartEvents = useEventStore((store) => store.chartEvents);
+
   const scrollRef = useRef<HTMLDivElement>(null);
+
   const [now, setNow] = useState<Temporal.ZonedDateTime | null>(null);
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Temporal.Now.zonedDateTimeISO()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const today = Temporal.Now.plainDateISO();
   const rangeStart = today.subtract({ days: PADDING_DAYS });
   const rangeEnd = today.add({ days: PADDING_DAYS });
   const totalDays = PADDING_DAYS * 2 + 1;
   const totalWidth = totalDays * COL_WIDTH;
-  const chartHeight = HEADER_HEIGHT + MOCK_EVENTS.length * (ROW_HEIGHT + ROW_GAP) + 8;
+  const chartHeight = HEADER_HEIGHT + chartEvents.length * (ROW_HEIGHT + ROW_GAP) + 8;
 
   const dates = Array.from({ length: totalDays }, (_, i) => rangeStart.add({ days: i }));
 
@@ -120,11 +37,6 @@ export default function EventPeriodChart() {
 
   const todayX = getX(today);
   const nowX = now ? ((now.hour * 3600 + now.minute * 60 + now.second) / 86400) * COL_WIDTH : COL_WIDTH / 2;
-
-  useEffect(() => {
-    const interval = setInterval(() => setNow(Temporal.Now.zonedDateTimeISO()), 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -159,7 +71,7 @@ export default function EventPeriodChart() {
           <div className="sticky top-0 z-20 bg-custom-bg" style={{ height: HEADER_HEIGHT }}>
             {dates.map((date, i) => {
               const isFirstOfMonth = date.day === 1;
-              const dayName = DAY_ABBRS[date.dayOfWeek % 7];
+              const dayName = DAY_ABBRS[date.dayOfWeek - 1];
               const monthName = MONTH_ABBRS[date.month - 1];
               const x = i * COL_WIDTH;
 
@@ -193,7 +105,7 @@ export default function EventPeriodChart() {
           ))}
 
           {/* Event bars */}
-          {MOCK_EVENTS.map((event, rowIndex) => {
+          {chartEvents.map((event, rowIndex) => {
             const startDate = Temporal.PlainDate.from(event.startDate);
             const endDate = Temporal.PlainDate.from(event.endDate);
 
@@ -219,8 +131,11 @@ export default function EventPeriodChart() {
             const br = endsAfterRange ? 0 : 12;
 
             return (
-              <div
+              <a
                 key={event.id}
+                href={event.gms_url!}
+                rel="noopener noreferrer"
+                target="_blank"
                 className="absolute flex items-center border border-white bg-gray-500/50"
                 style={{
                   left: startX,
@@ -230,15 +145,15 @@ export default function EventPeriodChart() {
                   borderRadius: `${tl}px ${tr}px ${br}px ${bl}px`,
                 }}>
                 <div className={cn('sticky left-1 px-2', 'max-w-full min-w-0')}>
-                  <span className="truncate block text-[16px] font-bold text-white">{event.title}</span>
+                  <span className="truncate block text-[16px] font-bold text-white">{event.name}</span>
                 </div>
 
                 {showBadge && (
-                  <span className="w-[65px] h-[22px] absolute left-full flex justify-center items-center ml-2 mr-2 rounded-full bg-white/80 text-[14px] text-gray-800 font-bold">
-                    {remainingDays}d 18H
+                  <span className="w-[45px] h-[22px] absolute left-full flex justify-center items-center ml-2 mr-2 rounded-full bg-white/80 text-[14px] text-gray-800 font-bold">
+                    {remainingDays}일
                   </span>
                 )}
-              </div>
+              </a>
             );
           })}
         </div>

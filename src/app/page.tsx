@@ -1,14 +1,12 @@
 import { Suspense } from 'react';
-import EventLists from '@/features/period-tracker/ui/EventLists';
-import EventPeriodChart from '@/features/period-tracker/ui/EventPeriodChart';
+import PeriodTracker from '@/features/period-tracker/PeriodTracker';
 
 export default function Home() {
   return (
     <>
-      <Suspense fallback={<div>차트 불러오는 중...</div>}>
-        <EventPeriodChart />
+      <Suspense fallback={<div>로딩 중...</div>}>
+        <PeriodTracker />
       </Suspense>
-      <EventLists />
     </>
   );
 }

@@ -138,7 +138,7 @@ export default function EventPeriodChart() {
     : '--:--:--';
 
   return (
-    <div className="max-w-[1250px] flex flex-col gap-[8px] bg-[#121316] text-white select-none mt-[36px] mx-auto">
+    <section className="max-w-[1250px] flex flex-col gap-[8px] bg-[#121316] text-white select-none mt-[36px] mx-auto">
       {/* Top bar */}
       <div className="flex items-center">
         <h2 className="text-2xl font-bold pl-4 xl:pl-0">진행 중 이벤트</h2>
@@ -243,6 +243,6 @@ export default function EventPeriodChart() {
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

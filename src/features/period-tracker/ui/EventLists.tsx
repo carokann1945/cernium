@@ -37,6 +37,7 @@ export default function EventListsClient() {
                     alt={event.name}
                     fill
                     sizes="100"
+                    loading="eager"
                   />
                 )}
               </figure>

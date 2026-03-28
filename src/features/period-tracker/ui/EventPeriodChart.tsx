@@ -140,7 +140,7 @@ export default function EventPeriodChart() {
             return (
               <a
                 key={event.id}
-                href={event.gms_url!}
+                href={event.gms_url ?? '#'}
                 rel="noopener noreferrer"
                 target="_blank"
                 className="absolute flex items-center border border-white bg-gray-500/50"

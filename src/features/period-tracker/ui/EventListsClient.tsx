@@ -23,12 +23,11 @@ export default function EventListsClient({ events }: Props) {
   );
 
   if (ongoingEvents.length === 0) {
-    return <p className={cn('w-full', 'mt-10', 'text-center')}>진행 중인 이벤트가 없습니다.</p>;
+    return null;
   }
 
   return (
-    <div className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[80px]')}>
-      <h2 className={cn('w-full text-2xl font-bold pl-4 xl:pl-0')}>진행중 이벤트</h2>
+    <div className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[50px]')}>
       <ul className={cn('w-full', 'grid gap-3 grid-cols-[repeat(auto-fit,304px)] justify-center')}>
         {ongoingEvents.map((event: Event) => (
           <li

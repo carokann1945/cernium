@@ -13,7 +13,7 @@ export interface Event {
 export interface ChartEvent {
   id: string;
   name: string;
-  startDate: Temporal.PlainDate;
-  endDate: Temporal.PlainDate;
+  startDate: Temporal.PlainDateTime; //PlainDateTime으로
+  endDate: Temporal.PlainDateTime; //PlainDateTime으로
   gms_url: string | null;
 }

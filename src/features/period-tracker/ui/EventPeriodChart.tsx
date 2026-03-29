@@ -113,24 +113,48 @@ export default function EventPeriodChart() {
 
           {/* 이벤트 바 */}
           {chartEvents.map((event, rowIndex) => {
-            const startDate = Temporal.PlainDate.from(event.startDate);
-            const endDate = Temporal.PlainDate.from(event.endDate);
+            const startDate = event.startDate.toPlainDate();
+            const endDate = event.endDate.toPlainDate();
 
             const startsBeforeRange = Temporal.PlainDate.compare(startDate, rangeStart) < 0;
             const endsAfterRange = Temporal.PlainDate.compare(endDate, rangeEnd) > 0;
 
-            const clampedStart = startsBeforeRange ? rangeStart : startDate;
-            const clampedEnd = endsAfterRange ? rangeEnd : endDate;
+            const startTimeOffset = ((event.startDate.hour * 3600 + event.startDate.minute * 60) / 86400) * COL_WIDTH;
+            const endTimeOffset = ((event.endDate.hour * 3600 + event.endDate.minute * 60) / 86400) * COL_WIDTH;
 
-            const startX = getX(clampedStart) + COL_WIDTH / 2;
-            const endX = getX(clampedEnd) + COL_WIDTH + COL_WIDTH / 2;
+            const startX = startsBeforeRange
+              ? getX(rangeStart) + COL_WIDTH / 2
+              : getX(startDate) + COL_WIDTH / 2 + startTimeOffset;
+
+            const endX = endsAfterRange
+              ? getX(rangeEnd) + COL_WIDTH / 2 + COL_WIDTH
+              : getX(endDate) + COL_WIDTH / 2 + endTimeOffset;
+
             const width = Math.max(endX - startX, COL_WIDTH);
 
             const top = HEADER_HEIGHT + 8 + rowIndex * (ROW_HEIGHT + ROW_GAP);
 
-            const isActive = Temporal.PlainDate.compare(endDate, today) > 0;
-            const remainingDays = isActive ? today.until(endDate, { largestUnit: 'day' }).days : null;
-            const showBadge = remainingDays !== null && !endsAfterRange;
+            const endZoned = now ? event.endDate.toZonedDateTime(now.timeZoneId) : null;
+
+            const diff =
+              now && endZoned && Temporal.ZonedDateTime.compare(endZoned, now) > 0
+                ? now.until(endZoned, { largestUnit: 'day' })
+                : null;
+
+            const remainingDays = diff ? diff.days : 0;
+            const remainingHours = diff ? diff.hours : 0;
+            const remainingMinutes = diff ? diff.minutes : 0;
+
+            const remainingLabel =
+              diff === null || endsAfterRange
+                ? null
+                : remainingDays > 0
+                  ? `${remainingDays}일 ${remainingHours}시간`
+                  : remainingHours > 0
+                    ? `${remainingHours}시간 ${remainingMinutes}분`
+                    : `${remainingMinutes}분`;
+
+            const showBadge = remainingLabel !== null;
 
             const tl = startsBeforeRange ? 0 : 12;
             const bl = startsBeforeRange ? 0 : 12;
@@ -154,10 +178,16 @@ export default function EventPeriodChart() {
                 <div className={cn('sticky left-1 px-2', 'max-w-full min-w-0')}>
                   <span className="truncate block text-[16px] font-bold text-white">{event.name}</span>
                 </div>
-
+                {/* 종료까지 며칠, 몇시간, 몇 분 남았는지 보여주는 뱃지 */}
                 {showBadge && (
-                  <span className="w-[45px] h-[22px] absolute left-full flex justify-center items-center ml-2 mr-2 rounded-full bg-white/80 text-[14px] text-gray-800 font-bold">
-                    {remainingDays}일
+                  <span
+                    className={cn(
+                      'w-fit h-[22px] ml-2 px-1',
+                      'absolute left-full flex justify-center items-center shrink-0',
+                      'rounded-full bg-white/80',
+                      'text-[14px] text-gray-800 font-bold whitespace-nowrap',
+                    )}>
+                    {remainingLabel}
                   </span>
                 )}
               </a>

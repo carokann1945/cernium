@@ -86,8 +86,8 @@ export function toChartEvent(event: Event): ChartEvent | null {
   return {
     id: event.id,
     name: event.name,
-    startDate: parsed.start.withTimeZone(KST).toPlainDate(),
-    endDate: parsed.end.withTimeZone(KST).toPlainDate(),
+    startDate: parsed.start.withTimeZone(KST).toPlainDateTime(),
+    endDate: parsed.end.withTimeZone(KST).toPlainDateTime(),
     gms_url: event.gms_url,
   };
 }

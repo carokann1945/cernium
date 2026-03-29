@@ -41,17 +41,17 @@ export default function MaintenanceBanner() {
 
   if (!isInitialized || upcoming.length === 0)
     return (
-      <section className={cn('max-w-[1252px]', 'mx-auto', 'flex flex-col gap-[8px]')}>
-        <h2 className="text-2xl font-bold pl-4 xl:pl-0">점검 정보</h2>
-        <p className="text-[16px] pl-4 xl:pl-0">진행 예정이거나 진행중인 점검이 없습니다</p>
+      <section className={cn('max-w-[1252px]', 'mt-[40px] mx-auto', 'flex flex-col gap-[8px]')}>
+        <h2 className="text-2xl font-bold pl-4 xl:pl-0">점검 일정</h2>
+        <p className="text-[16px] pl-4 xl:pl-0">진행 예정이거나 진행 중인 점검이 없습니다</p>
       </section>
     );
 
   const now = Temporal.Now.instant();
 
   return (
-    <section className={cn('max-w-[1252px]', 'mt-[30px] mx-auto', 'flex flex-col gap-[8px]')}>
-      <h2 className="text-2xl font-bold pl-4 xl:pl-0">점검 정보</h2>
+    <section className={cn('max-w-[1252px]', 'mt-[40px] mx-auto', 'flex flex-col gap-[8px]')}>
+      <h2 className="text-2xl font-bold pl-4 xl:pl-0">점검 일정</h2>
       <ul className={cn('flex flex-col gap-1 pl-4 xl:pl-0')}>
         {upcoming.map((m) => {
           const status = getStatus(m.start_at, now);

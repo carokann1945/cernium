@@ -10,6 +10,7 @@ type EventStore = {
   sortOrder: SortOrder;
   initialize: (params: { events: Event[]; now?: Temporal.ZonedDateTime }) => void;
   setSortOrder: (order: SortOrder) => void;
+  isInitialized: boolean;
 };
 
 export const useEventStore = create<EventStore>((set) => ({
@@ -17,6 +18,7 @@ export const useEventStore = create<EventStore>((set) => ({
   ongoingEvents: [],
   chartEvents: [],
   sortOrder: 'latest',
+  isInitialized: false,
 
   initialize: ({ events }) => {
     const now = Temporal.Now.zonedDateTimeISO('UTC');
@@ -30,6 +32,7 @@ export const useEventStore = create<EventStore>((set) => ({
       ongoingEvents,
       chartEvents: toChartEvents(ongoingEvents),
       sortOrder: 'latest',
+      isInitialized: true,
     });
   },
 

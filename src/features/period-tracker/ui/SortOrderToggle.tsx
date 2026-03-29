@@ -6,7 +6,7 @@ import type { SortOrder } from '../types/event';
 
 const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
   { value: 'latest', label: '최신순' },
-  { value: 'deadline', label: '마감일 순' },
+  { value: 'deadline', label: '종료일 순' },
 ];
 
 export function SortOrderToggle() {
@@ -14,7 +14,7 @@ export function SortOrderToggle() {
   const setSortOrder = useEventStore((state) => state.setSortOrder);
 
   return (
-    <div className={cn('flex', 'bg-custom-nav-bg', 'rounded-lg', 'p-1', 'gap-1')}>
+    <div className={cn('flex gap-1', 'bg-custom-nav-bg rounded-lg', 'p-1')}>
       {SORT_OPTIONS.map(({ value, label }) => (
         <button
           key={value}

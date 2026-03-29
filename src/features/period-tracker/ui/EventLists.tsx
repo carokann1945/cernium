@@ -7,9 +7,28 @@ import { formatEventPeriodToKST } from '../model/event-utils';
 
 export default function EventListsClient() {
   const ongoingEvents = useEventStore((store) => store.ongoingEvents);
+  const isInitialized = useEventStore((store) => store.isInitialized);
+
+  if (!isInitialized) {
+    return (
+      <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[50px]')}>
+        <figure className={cn('relative w-[50px] h-[50px]')}>
+          <Image src="/images/fire.png" alt="로딩중 이미지" fill sizes="50" className="object-cover" />
+        </figure>
+        <h2 className={cn('text-xl font-bold')}>로딩중...</h2>
+      </section>
+    );
+  }
 
   if (ongoingEvents.length === 0) {
-    return null;
+    return (
+      <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[50px]')}>
+        <figure className={cn('relative w-[50px] h-[50px]')}>
+          <Image src="/images/dawn.png" alt="데이터 없음 이미지" fill sizes="50" className="object-cover" />
+        </figure>
+        <h2 className={cn('text-xl font-bold')}>진행 중 이벤트가 없어요.</h2>
+      </section>
+    );
   }
 
   return (

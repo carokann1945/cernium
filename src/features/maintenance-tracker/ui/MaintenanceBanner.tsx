@@ -63,7 +63,7 @@ export default function MaintenanceBanner() {
               <span className={cn('text-gray-400')}>
                 <span className={cn(status === '점검 진행중' ? 'text-red-400' : 'text-yellow-400')}>{status}</span>
                 {' : '}
-                {formatPeriod(m)}
+                [KST] {formatPeriod(m)}
               </span>
             </li>
           );

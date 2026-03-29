@@ -10,7 +10,7 @@ export async function getCachedEvents(): Promise<Event[] | null> {
   cacheLife({ stale: 3600, revalidate: 3600, expire: 86400 });
 
   const supabase = createClient();
-  const { data, error } = await supabase.from('events').select('*');
+  const { data, error } = await supabase.from('events').select('*').order('source_index', { ascending: false });
 
   if (error) {
     console.error('[events] Supabase query failed:', error.message);

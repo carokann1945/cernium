@@ -4,6 +4,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useEventStore } from '../model/EventStore';
+import { SortOrderToggle } from './SortOrderToggle';
 
 // 레이아웃용 상수
 const COL_WIDTH = 40;
@@ -59,8 +60,9 @@ export default function EventPeriodChart() {
   return (
     <section className="max-w-[1250px] flex flex-col gap-[8px] bg-[#121316] text-white select-none mt-[36px] mx-auto">
       {/* 섹션 제목 */}
-      <div className="flex items-center">
+      <div className="flex items-center gap-[16px]">
         <h2 className="text-2xl font-bold pl-4 xl:pl-0">진행 중 이벤트</h2>
+        <SortOrderToggle />
       </div>
 
       {/* 본문 */}

@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import type { Event, ChartEvent } from '../types/event';
+import type { Event, ChartEvent, SortOrder } from '../types/event';
 
 type ParsedEventPeriod = {
   start: Temporal.ZonedDateTime;
@@ -94,4 +94,25 @@ export function toChartEvent(event: Event): ChartEvent | null {
 
 export function toChartEvents(events: Event[]): ChartEvent[] {
   return events.map(toChartEvent).filter((event): event is ChartEvent => event !== null);
+}
+
+export function sortEventsByLatest(events: Event[]): Event[] {
+  return events.slice().sort((a, b) => b.source_index - a.source_index);
+}
+
+export function sortEventsByDeadline(events: Event[]): Event[] {
+  return events.slice().sort((a, b) => {
+    const parsedA = a.event_period ? parseEventPeriod(a.event_period) : null;
+    const parsedB = b.event_period ? parseEventPeriod(b.event_period) : null;
+    if (!parsedA && !parsedB) return b.source_index - a.source_index;
+    if (!parsedA) return 1;
+    if (!parsedB) return -1;
+    const endCmp = Temporal.ZonedDateTime.compare(parsedA.end, parsedB.end);
+    if (endCmp !== 0) return endCmp;
+    return b.source_index - a.source_index;
+  });
+}
+
+export function sortEvents(events: Event[], order: SortOrder): Event[] {
+  return order === 'deadline' ? sortEventsByDeadline(events) : sortEventsByLatest(events);
 }

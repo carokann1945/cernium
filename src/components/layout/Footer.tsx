@@ -31,7 +31,7 @@ function DiscordLink() {
 
 export default function Footer() {
   return (
-    <footer className={cn('bg-custom-nav-bg border-t border-white/10 mt-[100px]', 'flex')}>
+    <footer className={cn('bg-custom-nav-bg border-t border-white/10 mt-[80px]', 'flex')}>
       <div className={cn('w-[360px] md:w-[600px] mx-auto px-4 md:px-5 py-8', 'flex justify-between items-center')}>
         {/* 사이트 로고 */}
         <div className={cn('flex flex-col gap-3')}>

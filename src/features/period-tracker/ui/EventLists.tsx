@@ -1,26 +1,53 @@
 'use client';
 
 import Image from 'next/image';
+import type { MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
-import { useEventStore } from '../model/EventStore';
-import { formatEventPeriodToKST } from '../model/event-utils';
+import type { OngoingEventView } from '../types/event';
 
-export default function EventListsClient() {
-  const ongoingEvents = useEventStore((store) => store.ongoingEvents);
-  const isInitialized = useEventStore((store) => store.isInitialized);
+type Props = {
+  events: OngoingEventView[];
+};
 
-  if (!isInitialized) {
-    return (
-      <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[50px]')}>
-        <figure className={cn('relative w-[50px] h-[50px]')}>
-          <Image src="/images/fire.png" alt="로딩중 이미지" fill sizes="50" className="object-cover" />
-        </figure>
-        <h2 className={cn('text-xl font-bold')}>로딩중...</h2>
-      </section>
-    );
+function isMobileDevice() {
+  if (typeof navigator === 'undefined') return false;
+
+  const userAgentData = (
+    navigator as Navigator & {
+      userAgentData?: { mobile?: boolean };
+    }
+  ).userAgentData;
+
+  if (typeof userAgentData?.mobile === 'boolean') {
+    return userAgentData.mobile;
   }
 
-  if (ongoingEvents.length === 0) {
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+}
+
+function getMobileKmsUrl(url: string) {
+  try {
+    const nextUrl = new URL(url);
+
+    if (nextUrl.hostname === 'maplestory.nexon.com') {
+      nextUrl.hostname = 'm.maplestory.nexon.com';
+    }
+
+    return nextUrl.toString();
+  } catch {
+    return url;
+  }
+}
+
+export default function EventLists({ events }: Props) {
+  const handleKmsClick = (e: MouseEvent<HTMLAnchorElement>, kmsUrl: string) => {
+    if (!isMobileDevice()) return;
+
+    e.preventDefault();
+    window.open(getMobileKmsUrl(kmsUrl), '_blank', 'noopener,noreferrer');
+  };
+
+  if (events.length === 0) {
     return (
       <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[50px]')}>
         <figure className={cn('relative w-[50px] h-[50px]')}>
@@ -34,7 +61,7 @@ export default function EventListsClient() {
   return (
     <section className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[50px]')}>
       <ul className={cn('w-full', 'grid gap-3 grid-cols-[repeat(auto-fit,304px)] justify-center')}>
-        {ongoingEvents.map((event) => (
+        {events.map((event) => (
           <li
             key={event.id}
             className={cn(
@@ -63,14 +90,13 @@ export default function EventListsClient() {
               <span className={cn('font-bold line-clamp-2 min-h-[56px]')}>{event.name}</span>
             </a>
             <div className={cn('flex flex-col gap-[6px]')}>
-              <p className={cn('text-sm text-gray-300 break-keep')}>
-                {event.event_period ? `[KST] ${formatEventPeriodToKST(event.event_period)}` : '기간 정보 없음'}
-              </p>
+              <p className={cn('text-sm text-gray-300 break-keep')}>[KST] {event.periodKst}</p>
               {event.kms_url ? (
                 <a
                   href={event.kms_url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={(e) => handleKmsClick(e, event.kms_url!)}
                   className={cn('cursor-pointer px-[10px] py-px bg-custom-green rounded-md', 'self-start')}>
                   kms
                 </a>

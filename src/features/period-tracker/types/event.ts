@@ -1,5 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill';
-
 export interface Event {
   id: string;
   source_index: number;
@@ -11,12 +9,16 @@ export interface Event {
   kms_url: string | null;
 }
 
-export interface ChartEvent {
+export interface OngoingEventView {
   id: string;
   name: string;
-  startDate: Temporal.PlainDateTime;
-  endDate: Temporal.PlainDateTime;
+  source_index: number;
+  image_url: string | null;
   gms_url: string | null;
+  kms_url: string | null;
+  periodKst: string;
+  startAtIso: string; // UTC ISO e.g. "2026-02-04T00:00:00Z"
+  endAtIso: string; // UTC ISO e.g. "2026-02-05T00:00:00Z"
 }
 
 export type SortOrder = 'latest' | 'deadline';

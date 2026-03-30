@@ -1,21 +1,22 @@
+import { Temporal } from '@js-temporal/polyfill';
+import { connection } from 'next/server';
 import { cn } from '@/lib/utils';
-import EventStoreInitializer from './EventStoreInitializer';
+import { toOngoingEventView } from './model/event-utils';
 import { getCachedEvents } from './model/events';
-import EventLists from './ui/EventLists';
-import EventPeriodChart from './ui/EventPeriodChart';
+import type { OngoingEventView } from './types/event';
+import PeriodTrackerClient from './ui/PeriodTrackerClient';
 
 export default async function PeriodTracker() {
-  const events = await getCachedEvents();
+  await connection();
 
-  if (events === null) {
+  const rawEvents = await getCachedEvents();
+
+  if (rawEvents === null) {
     return <p className={cn('w-full', 'mt-10', 'text-center')}>이벤트 데이터를 불러오지 못했습니다.</p>;
   }
 
-  return (
-    <>
-      <EventStoreInitializer initialEvents={events} />
-      <EventPeriodChart />
-      <EventLists />
-    </>
-  );
+  const now = Temporal.Now.zonedDateTimeISO('Asia/Seoul');
+  const events = rawEvents.map((e) => toOngoingEventView(e, now)).filter((e): e is OngoingEventView => e !== null);
+
+  return <PeriodTrackerClient events={events} initialNowIso={now.toString()} />;
 }

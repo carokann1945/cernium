@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import type { Event, ChartEvent, SortOrder } from '../types/event';
+import type { Event, OngoingEventView, SortOrder } from '../types/event';
 
 type ParsedEventPeriod = {
   start: Temporal.ZonedDateTime;
@@ -72,47 +72,41 @@ function pad(n: number) {
   return String(n).padStart(2, '0');
 }
 
-// startDate, endDate가 있는 이벤트 객체 생성용
-export function toChartEvent(event: Event): ChartEvent | null {
-  if (!event.event_period) {
-    return null;
-  }
+export function toOngoingEventView(event: Event, now: Temporal.ZonedDateTime): OngoingEventView | null {
+  if (!event.event_period) return null;
 
   const parsed = parseEventPeriod(event.event_period);
-  if (!parsed) {
-    return null;
-  }
+  if (!parsed) return null;
+
+  if (!isOngoingEvent(event.event_period, now)) return null;
+
+  const periodKst = formatEventPeriodToKST(event.event_period);
 
   return {
     id: event.id,
     name: event.name,
-    startDate: parsed.start.withTimeZone(KST).toPlainDateTime(),
-    endDate: parsed.end.withTimeZone(KST).toPlainDateTime(),
+    source_index: event.source_index,
+    image_url: event.image_url,
     gms_url: event.gms_url,
+    kms_url: event.kms_url,
+    periodKst,
+    startAtIso: parsed.start.toInstant().toString(),
+    endAtIso: parsed.end.toInstant().toString(),
   };
 }
 
-export function toChartEvents(events: Event[]): ChartEvent[] {
-  return events.map(toChartEvent).filter((event): event is ChartEvent => event !== null);
-}
-
-export function sortEventsByLatest(events: Event[]): Event[] {
+export function sortOngoingEventsByLatest(events: OngoingEventView[]): OngoingEventView[] {
   return events.slice().sort((a, b) => b.source_index - a.source_index);
 }
 
-export function sortEventsByDeadline(events: Event[]): Event[] {
+export function sortOngoingEventsByDeadline(events: OngoingEventView[]): OngoingEventView[] {
   return events.slice().sort((a, b) => {
-    const parsedA = a.event_period ? parseEventPeriod(a.event_period) : null;
-    const parsedB = b.event_period ? parseEventPeriod(b.event_period) : null;
-    if (!parsedA && !parsedB) return b.source_index - a.source_index;
-    if (!parsedA) return 1;
-    if (!parsedB) return -1;
-    const endCmp = Temporal.ZonedDateTime.compare(parsedA.end, parsedB.end);
+    const endCmp = Temporal.Instant.compare(Temporal.Instant.from(a.endAtIso), Temporal.Instant.from(b.endAtIso));
     if (endCmp !== 0) return endCmp;
     return b.source_index - a.source_index;
   });
 }
 
-export function sortEvents(events: Event[], order: SortOrder): Event[] {
-  return order === 'deadline' ? sortEventsByDeadline(events) : sortEventsByLatest(events);
+export function sortOngoingEvents(events: OngoingEventView[], order: SortOrder): OngoingEventView[] {
+  return order === 'deadline' ? sortOngoingEventsByDeadline(events) : sortOngoingEventsByLatest(events);
 }

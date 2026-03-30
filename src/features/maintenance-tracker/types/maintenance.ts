@@ -6,3 +6,8 @@ export interface Maintenance {
   url: string;
   source_index: number;
 }
+
+export type MaintenanceWithStatus = Maintenance & {
+  status: '점검 진행중' | '점검 예정';
+  periodKst: string;
+};

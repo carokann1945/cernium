@@ -10,9 +10,23 @@ const pretendard = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Cernium | 점검 일정 & 진행중 이벤트',
+  metadataBase: new URL('https://cernium.vercel.app'),
+  title: {
+    default: 'Cernium | 점검 일정 & 진행중 이벤트',
+    template: 'Cernium | %s',
+  },
   description:
     'GMS 이벤트와 점검 공지를 자동으로 정리해 제공합니다. 진행 중 이벤트, 점검 일정, KMS 이벤트 매칭까지 한눈에 확인하세요.',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({

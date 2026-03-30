@@ -12,7 +12,7 @@ const pretendard = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL('https://cernium.vercel.app'),
   title: {
-    default: 'Cernium | 점검 일정 & 진행중 이벤트',
+    default: 'Cernium | GMS 점검 일정 & 진행중 이벤트',
     template: 'Cernium | %s',
   },
   description:

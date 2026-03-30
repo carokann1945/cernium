@@ -18,7 +18,7 @@ export default function PeriodTrackerClient({ events, initialNowIso }: Props) {
 
   return (
     <>
-      <section className="max-w-[1250px] flex flex-col gap-[8px] bg-[#121316] text-white select-none mt-[40px] mx-auto">
+      <section className="max-w-[1250px] flex flex-col gap-[8px] bg-[#121316] text-white select-none mt-[60px] mx-auto">
         <div className="flex flex-col items-start sm:flex-row sm:items-center gap-[16px]">
           <h2 className="text-2xl font-bold pl-4 xl:pl-0">진행 중 이벤트</h2>
           <SortOrderToggle value={sortOrder} onChange={setSortOrder} />

@@ -71,7 +71,7 @@ export default async function MaintenanceTracker() {
         <ul className={cn('flex flex-col gap-2', 'pl-4 xl:pl-0')}>
           {upcoming.map((m) => (
             <li key={m.id} className={cn('flex flex-col gap-1', 'text-sm')}>
-              <a href={m.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              <a href={m.url} target="_blank" rel="noopener noreferrer" className="hover:underline w-fit">
                 {m.name}
               </a>
               <span className="text-gray-400">

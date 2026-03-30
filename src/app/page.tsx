@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import MaintenanceTracker from '@/features/maintenance-tracker/MaintenanceTracker';
+import { MaintenanceTrackerSkeleton } from '@/features/maintenance-tracker/MaintenanceTrackerSkeleton';
 import PeriodTracker from '@/features/period-tracker/PeriodTracker';
+import { PeriodTrackerSkeleton } from '@/features/period-tracker/PeriodTrackerSkeleton';
 
 export const metadata: Metadata = {
   keywords: ['메이플 이벤트', '메이플 점검', '메이플 일정', '메이플 이벤트 정리'],
@@ -26,8 +28,10 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <Suspense fallback={<div>로딩 중...</div>}>
+      <Suspense fallback={<MaintenanceTrackerSkeleton />}>
         <MaintenanceTracker />
+      </Suspense>
+      <Suspense fallback={<PeriodTrackerSkeleton />}>
         <PeriodTracker />
       </Suspense>
     </>

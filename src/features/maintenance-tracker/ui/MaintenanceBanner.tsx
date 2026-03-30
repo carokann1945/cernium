@@ -2,7 +2,6 @@
 
 import { Temporal } from '@js-temporal/polyfill';
 import { cn } from '@/lib/utils';
-import { useMaintenanceStore } from '../model/MaintenanceStore';
 import type { Maintenance } from '../types/maintenance';
 
 const KST = 'Asia/Seoul';
@@ -35,11 +34,8 @@ function getStatus(startIso: string, now: Temporal.Instant): '점검 진행중' 
   }
 }
 
-export default function MaintenanceBanner() {
-  const upcoming = useMaintenanceStore((state) => state.upcoming);
-  const isInitialized = useMaintenanceStore((state) => state.isInitialized);
-
-  if (!isInitialized || upcoming.length === 0)
+export default function MaintenanceBanner({ upcoming }: { upcoming: Maintenance[] }) {
+  if (upcoming.length === 0)
     return (
       <section className={cn('max-w-[1252px]', 'mt-[40px] mx-auto', 'flex flex-col gap-[8px]')}>
         <h2 className="text-2xl font-bold pl-4 xl:pl-0">점검 일정</h2>

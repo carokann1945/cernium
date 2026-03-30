@@ -1,77 +1,146 @@
 'use client';
 
 import { Temporal } from '@js-temporal/polyfill';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { DAY_ABBRS, MONTH_ABBRS } from '@/constants/time';
 import { cn } from '@/lib/utils';
 import type { OngoingEventView } from '../types/event';
 
-// 레이아웃용 상수
 const COL_WIDTH = 40;
 const ROW_HEIGHT = 32;
 const ROW_GAP = 12;
 const HEADER_HEIGHT = 72;
-const PADDING_DAYS = 40; //앞뒤로 며칠까지?
-// 표시용 상수
-const DAY_ABBRS = ['월', '화', '수', '목', '금', '토', '일'];
-const MONTH_ABBRS = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+const PADDING_DAYS = 40;
+const BADGE_HEIGHT = 22;
 
 type Props = {
   events: OngoingEventView[];
   initialNowIso: string;
 };
 
+type EventBarLayout = {
+  id: string;
+  name: string;
+  href: string | null;
+  left: number;
+  top: number;
+  width: number;
+  borderRadius: string;
+  badgeLeft: number;
+  badgeTop: number;
+  endEpochMs: number;
+  showCountdown: boolean;
+};
+
+function getDateX(rangeStart: Temporal.PlainDate, date: Temporal.PlainDate) {
+  return rangeStart.until(date, { largestUnit: 'day' }).days * COL_WIDTH;
+}
+
+function getTimeOffset(value: Temporal.ZonedDateTime | Temporal.PlainDateTime) {
+  return ((value.hour * 3600 + value.minute * 60 + value.second) / 86400) * COL_WIDTH;
+}
+
+function formatClock(now: Temporal.ZonedDateTime) {
+  return `${String(now.hour).padStart(2, '0')}:${String(now.minute).padStart(2, '0')}:${String(now.second).padStart(2, '0')}`;
+}
+
+function formatRemainingLabel(diffMs: number) {
+  if (diffMs <= 0) return null;
+
+  const totalMinutes = Math.floor(diffMs / 60000);
+  const days = Math.floor(totalMinutes / (60 * 24));
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+  const minutes = totalMinutes % 60;
+
+  if (days > 0) return `${days}일 ${hours}시간`;
+  if (hours > 0) return `${hours}시간 ${minutes}분`;
+  return `${minutes}분`;
+}
+
 export default function EventPeriodChart({ events, initialNowIso }: Props) {
-  // 실시간 시간 뱃지용 현재 시간
-  const [now, setNow] = useState<Temporal.ZonedDateTime | null>(null);
-  useEffect(() => {
-    const interval = setInterval(() => setNow(Temporal.Now.zonedDateTimeISO('Asia/Seoul')), 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // 날짜 범위 계산
-  const today = Temporal.Now.plainDateISO('Asia/Seoul');
-  const rangeStart = today.subtract({ days: PADDING_DAYS });
-  const rangeEnd = today.add({ days: PADDING_DAYS });
+  const initialNow = useMemo(
+    () => Temporal.ZonedDateTime.from(initialNowIso).withTimeZone('Asia/Seoul'),
+    [initialNowIso],
+  );
+
+  const today = useMemo(() => initialNow.toPlainDate(), [initialNow]);
+  const rangeStart = useMemo(() => today.subtract({ days: PADDING_DAYS }), [today]);
+  const rangeEnd = useMemo(() => today.add({ days: PADDING_DAYS }), [today]);
   const totalDays = PADDING_DAYS * 2 + 1;
-  const dates = Array.from({ length: totalDays }, (_, i) => rangeStart.add({ days: i }));
 
-  // 레이아웃 계산
+  const dates = useMemo(
+    () => Array.from({ length: totalDays }, (_, i) => rangeStart.add({ days: i })),
+    [rangeStart, totalDays],
+  );
+
   const totalWidth = totalDays * COL_WIDTH;
   const chartHeight = HEADER_HEIGHT + events.length * (ROW_HEIGHT + ROW_GAP) + 8;
+  const todayX = getDateX(rangeStart, today);
 
-  // 실시간 시간 뱃지, 실시간 세로선 좌표 계산 함수
-  const getX = (date: Temporal.PlainDate): number => rangeStart.until(date, { largestUnit: 'day' }).days * COL_WIDTH;
-  const todayX = getX(today);
-  const nowX = now ? ((now.hour * 3600 + now.minute * 60 + now.second) / 86400) * COL_WIDTH : COL_WIDTH / 2;
+  const barLayouts = useMemo<EventBarLayout[]>(() => {
+    return events.map((event, rowIndex) => {
+      const start = Temporal.Instant.from(event.startAtIso).toZonedDateTimeISO('Asia/Seoul');
+      const end = Temporal.Instant.from(event.endAtIso).toZonedDateTimeISO('Asia/Seoul');
 
-  // 초기 스크롤 이동
-  const scrollRef = useRef<HTMLDivElement>(null);
+      const startDate = start.toPlainDate();
+      const endDate = end.toPlainDate();
+
+      const startsBeforeRange = Temporal.PlainDate.compare(startDate, rangeStart) < 0;
+      const endsAfterRange = Temporal.PlainDate.compare(endDate, rangeEnd) > 0;
+
+      const startX = startsBeforeRange
+        ? getDateX(rangeStart, rangeStart) + COL_WIDTH / 2
+        : getDateX(rangeStart, startDate) + COL_WIDTH / 2 + getTimeOffset(start);
+
+      const endX = endsAfterRange
+        ? getDateX(rangeStart, rangeEnd) + COL_WIDTH / 2 + COL_WIDTH
+        : getDateX(rangeStart, endDate) + COL_WIDTH / 2 + getTimeOffset(end);
+
+      const top = HEADER_HEIGHT + 8 + rowIndex * (ROW_HEIGHT + ROW_GAP);
+
+      const tl = startsBeforeRange ? 0 : 12;
+      const bl = startsBeforeRange ? 0 : 12;
+      const tr = endsAfterRange ? 0 : 12;
+      const br = endsAfterRange ? 0 : 12;
+
+      return {
+        id: event.id,
+        name: event.name,
+        href: event.gms_url,
+        left: startX,
+        top,
+        width: Math.max(endX - startX, COL_WIDTH),
+        borderRadius: `${tl}px ${tr}px ${br}px ${bl}px`,
+        badgeLeft: endX + 8,
+        badgeTop: top + (ROW_HEIGHT - BADGE_HEIGHT) / 2,
+        endEpochMs: end.epochMilliseconds,
+        showCountdown: !endsAfterRange,
+      };
+    });
+  }, [events, rangeStart, rangeEnd]);
+
   useLayoutEffect(() => {
-    if (scrollRef.current) {
-      const containerWidth = scrollRef.current.clientWidth;
-      scrollRef.current.scrollLeft = todayX - containerWidth / 2 + COL_WIDTH / 2;
-    }
-  }, [todayX, events.length]);
+    if (!scrollRef.current) return;
 
-  // 실시간 시간 뱃지 표시용 문자열
-  const timeStr = now
-    ? `${String(now.hour).padStart(2, '0')}:${String(now.minute).padStart(2, '0')}:${String(now.second).padStart(2, '0')}`
-    : '--:--:--';
+    const containerWidth = scrollRef.current.clientWidth;
+    scrollRef.current.scrollLeft = todayX - containerWidth / 2 + COL_WIDTH / 2;
+  }, [todayX]);
 
   if (events.length === 0) return null;
 
   return (
     <div ref={scrollRef} className="overflow-x-auto pt-5 pb-1 scrollbar-custom">
       <div className="relative" style={{ width: totalWidth, height: chartHeight }}>
-        {/* 실시간 뱃지 & 실시간 세로선 */}
-        <div className="absolute z-30 h-full" style={{ left: todayX + nowX + COL_WIDTH / 2 }}>
-          <div className="absolute -top-[18px] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border bg-white/80 px-2.5 text-[16px] text-black">
-            {timeStr}
-          </div>
-          <div className="absolute top-[8px] bottom-[5px] left-1/2 -translate-x-1/2 w-[2px] bg-white" />
-        </div>
+        <EventPeriodLiveOverlay
+          initialNowIso={initialNowIso}
+          rangeStart={rangeStart}
+          rangeEnd={rangeEnd}
+          chartHeight={chartHeight}
+          barLayouts={barLayouts}
+        />
 
-        {/* 날짜 표시 부분 */}
         <div className="sticky top-0 z-20 bg-custom-bg" style={{ height: HEADER_HEIGHT }}>
           {dates.map((date, i) => {
             const isFirstOfMonth = date.day === 1;
@@ -99,7 +168,6 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
           })}
         </div>
 
-        {/* 날짜 표시 밑에 흐린 세로선 */}
         {dates.map((_, i) => (
           <div
             key={`col-${i}`}
@@ -108,92 +176,107 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
           />
         ))}
 
-        {/* 이벤트 바 */}
-        {events.map((event, rowIndex) => {
-          const startDate = Temporal.Instant.from(event.startAtIso).toZonedDateTimeISO('Asia/Seoul').toPlainDateTime();
-          const endDate = Temporal.Instant.from(event.endAtIso).toZonedDateTimeISO('Asia/Seoul').toPlainDateTime();
-
-          const startPlainDate = startDate.toPlainDate();
-          const endPlainDate = endDate.toPlainDate();
-
-          const startsBeforeRange = Temporal.PlainDate.compare(startPlainDate, rangeStart) < 0;
-          const endsAfterRange = Temporal.PlainDate.compare(endPlainDate, rangeEnd) > 0;
-
-          const startTimeOffset = ((startDate.hour * 3600 + startDate.minute * 60) / 86400) * COL_WIDTH;
-          const endTimeOffset = ((endDate.hour * 3600 + endDate.minute * 60) / 86400) * COL_WIDTH;
-
-          const startX = startsBeforeRange
-            ? getX(rangeStart) + COL_WIDTH / 2
-            : getX(startPlainDate) + COL_WIDTH / 2 + startTimeOffset;
-
-          const endX = endsAfterRange
-            ? getX(rangeEnd) + COL_WIDTH / 2 + COL_WIDTH
-            : getX(endPlainDate) + COL_WIDTH / 2 + endTimeOffset;
-
-          const width = Math.max(endX - startX, COL_WIDTH);
-
-          const top = HEADER_HEIGHT + 8 + rowIndex * (ROW_HEIGHT + ROW_GAP);
-
-          const endZoned = now ? endDate.toZonedDateTime('Asia/Seoul') : null;
-
-          const diff =
-            now && endZoned && Temporal.ZonedDateTime.compare(endZoned, now) > 0
-              ? now.until(endZoned, { largestUnit: 'day' })
-              : null;
-
-          const remainingDays = diff ? diff.days : 0;
-          const remainingHours = diff ? diff.hours : 0;
-          const remainingMinutes = diff ? diff.minutes : 0;
-
-          const remainingLabel =
-            diff === null || endsAfterRange
-              ? null
-              : remainingDays > 0
-                ? `${remainingDays}일 ${remainingHours}시간`
-                : remainingHours > 0
-                  ? `${remainingHours}시간 ${remainingMinutes}분`
-                  : `${remainingMinutes}분`;
-
-          const showBadge = remainingLabel !== null;
-
-          const tl = startsBeforeRange ? 0 : 12;
-          const bl = startsBeforeRange ? 0 : 12;
-          const tr = endsAfterRange ? 0 : 12;
-          const br = endsAfterRange ? 0 : 12;
-
-          return (
+        {barLayouts.map((bar) =>
+          bar.href ? (
             <a
-              key={event.id}
-              href={event.gms_url ?? '#'}
+              key={bar.id}
+              href={bar.href}
               rel="noopener noreferrer"
               target="_blank"
               className="absolute flex items-center border border-white bg-gray-500/50"
               style={{
-                left: startX,
-                top,
-                width,
+                left: bar.left,
+                top: bar.top,
+                width: bar.width,
                 height: ROW_HEIGHT,
-                borderRadius: `${tl}px ${tr}px ${br}px ${bl}px`,
+                borderRadius: bar.borderRadius,
               }}>
               <div className={cn('sticky left-1 px-2', 'max-w-full min-w-0')}>
-                <span className="truncate block text-[16px] font-bold text-white">{event.name}</span>
+                <span className="truncate block text-[16px] font-bold text-white">{bar.name}</span>
               </div>
-              {/* 종료까지 며칠, 몇시간, 몇 분 남았는지 보여주는 뱃지 */}
-              {showBadge && (
-                <span
-                  className={cn(
-                    'w-fit h-[22px] ml-2 px-1',
-                    'absolute left-full flex justify-center items-center shrink-0',
-                    'rounded-full bg-white/80',
-                    'text-[14px] text-gray-800 font-bold whitespace-nowrap',
-                  )}>
-                  {remainingLabel}
-                </span>
-              )}
             </a>
-          );
-        })}
+          ) : (
+            <div
+              key={bar.id}
+              aria-disabled="true"
+              className="absolute flex items-center border border-white bg-gray-500/50"
+              style={{
+                left: bar.left,
+                top: bar.top,
+                width: bar.width,
+                height: ROW_HEIGHT,
+                borderRadius: bar.borderRadius,
+              }}>
+              <div className={cn('sticky left-1 px-2', 'max-w-full min-w-0')}>
+                <span className="truncate block text-[16px] font-bold text-white">{bar.name}</span>
+              </div>
+            </div>
+          ),
+        )}
       </div>
     </div>
+  );
+}
+
+type LiveOverlayProps = {
+  initialNowIso: string;
+  rangeStart: Temporal.PlainDate;
+  rangeEnd: Temporal.PlainDate;
+  chartHeight: number;
+  barLayouts: EventBarLayout[];
+};
+
+function EventPeriodLiveOverlay({ initialNowIso, rangeStart, rangeEnd, chartHeight, barLayouts }: LiveOverlayProps) {
+  const initialNow = useMemo(
+    () => Temporal.ZonedDateTime.from(initialNowIso).withTimeZone('Asia/Seoul'),
+    [initialNowIso],
+  );
+
+  const [now, setNow] = useState(initialNow);
+
+  useEffect(() => {
+    const updateNow = () => setNow(Temporal.Now.zonedDateTimeISO('Asia/Seoul'));
+
+    updateNow();
+
+    const interval = window.setInterval(updateNow, 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const nowDate = now.toPlainDate();
+  const isInRange =
+    Temporal.PlainDate.compare(nowDate, rangeStart) >= 0 && Temporal.PlainDate.compare(nowDate, rangeEnd) <= 0;
+
+  const lineLeft = isInRange ? getDateX(rangeStart, nowDate) + COL_WIDTH / 2 + getTimeOffset(now) : null;
+
+  return (
+    <>
+      {lineLeft !== null && (
+        <div className="absolute z-30" style={{ left: lineLeft, height: chartHeight }}>
+          <div className="absolute -top-[18px] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border bg-white/80 px-2.5 text-[16px] text-black">
+            {formatClock(now)}
+          </div>
+          <div className="absolute top-[8px] left-1/2 h-[calc(100%-13px)] w-[2px] -translate-x-1/2 bg-white" />
+        </div>
+      )}
+
+      {barLayouts.map((bar) => {
+        if (!bar.showCountdown) return null;
+
+        const label = formatRemainingLabel(bar.endEpochMs - now.epochMilliseconds);
+        if (label === null) return null;
+
+        return (
+          <span
+            key={`${bar.id}-remaining`}
+            className={cn(
+              'absolute flex items-center justify-center whitespace-nowrap rounded-full bg-white/80 px-1 text-[14px] font-bold text-gray-800 z-30',
+            )}
+            style={{ left: bar.badgeLeft, top: bar.badgeTop, height: BADGE_HEIGHT }}>
+            {label}
+          </span>
+        );
+      })}
+    </>
   );
 }

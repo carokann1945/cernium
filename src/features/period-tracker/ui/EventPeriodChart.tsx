@@ -131,7 +131,7 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
   if (events.length === 0) return null;
 
   return (
-    <div ref={scrollRef} className="overflow-x-auto pt-5 pb-1 scrollbar-custom">
+    <div ref={scrollRef} className="overflow-x-auto pt-5 pb-1 pl-5 scrollbar-custom">
       <div className="relative" style={{ width: totalWidth, height: chartHeight }}>
         <EventPeriodLiveOverlay
           initialNowIso={initialNowIso}

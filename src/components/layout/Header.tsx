@@ -44,8 +44,8 @@ export default function Header() {
   return (
     <header className={cn('bg-custom-nav-bg')}>
       <div className="w-full h-16 relative mx-auto flex items-center px-4 md:px-5">
-        {/* Hamburger button — mobile only */}
-        <button
+        {/* Hamburger button — mobile only 지금은 안씀 */}
+        {/* <button
           className={cn(
             'md:hidden w-10 h-10 flex items-center justify-center',
             'text-white/70 hover:text-white transition-colors',
@@ -54,19 +54,27 @@ export default function Header() {
           aria-label="Toggle menu"
           aria-expanded={isMenuOpen}>
           {isMenuOpen ? <XIcon /> : <MenuIcon />}
-        </button>
+        </button> */}
 
         <div
           className={cn(
             'flex gap-[8px] items-center',
-            'absolute left-1/2 -translate-x-1/2',
-            'md:static md:translate-x-0 md:left-0',
+            // 'absolute left-1/2 -translate-x-1/2',
+            // 'md:static md:translate-x-0 md:left-0',
             'cursor-pointer',
           )}>
-          <figure className={cn('hidden md:inline w-[35px] h-[35px]', 'relative')}>
+          <figure className={cn('hidden sm:inline w-[35px] h-[35px]', 'relative')}>
             <Image src="/images/Cernium.png" alt="logo image" fill sizes="50" className="object-cover" />
           </figure>
           <span className={cn('font-bold text-[24px] md:text-[32px] text-white tracking-tight')}>Cernium</span>
+          <div
+            className={cn(
+              'w-[50px] h-[23px]',
+              'rounded-full bg-blue-400 text-[14px] font-bold',
+              'flex justify-center items-center',
+            )}>
+            BETA
+          </div>
         </div>
 
         {/* Center spacer — desktop only, grows to push right content */}

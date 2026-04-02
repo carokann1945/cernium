@@ -1,9 +1,9 @@
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
-import { Analytics } from '@vercel/analytics/next';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',

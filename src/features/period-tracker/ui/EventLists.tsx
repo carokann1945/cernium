@@ -1,51 +1,17 @@
 'use client';
 
 import Image from 'next/image';
-import type { MouseEvent } from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { OngoingEventView } from '../types/event';
+import SummaryModal from './SummaryModal';
 
 type Props = {
   events: OngoingEventView[];
 };
 
-function isMobileDevice() {
-  if (typeof navigator === 'undefined') return false;
-
-  const userAgentData = (
-    navigator as Navigator & {
-      userAgentData?: { mobile?: boolean };
-    }
-  ).userAgentData;
-
-  if (typeof userAgentData?.mobile === 'boolean') {
-    return userAgentData.mobile;
-  }
-
-  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-}
-
-function getMobileKmsUrl(url: string) {
-  try {
-    const nextUrl = new URL(url);
-
-    if (nextUrl.hostname === 'maplestory.nexon.com') {
-      nextUrl.hostname = 'm.maplestory.nexon.com';
-    }
-
-    return nextUrl.toString();
-  } catch {
-    return url;
-  }
-}
-
 export default function EventLists({ events }: Props) {
-  const handleKmsClick = (e: MouseEvent<HTMLAnchorElement>, kmsUrl: string) => {
-    if (!isMobileDevice()) return;
-
-    e.preventDefault();
-    window.open(getMobileKmsUrl(kmsUrl), '_blank', 'noopener,noreferrer');
-  };
+  const [selectedEvent, setSelectedEvent] = useState<OngoingEventView | null>(null);
 
   if (events.length === 0) {
     return (
@@ -65,7 +31,7 @@ export default function EventLists({ events }: Props) {
           <li
             key={event.id}
             className={cn(
-              'w-[300px] min-h-[300px]',
+              'w-[300px] min-h-[310px]',
               'flex flex-col justify-between',
               'bg-custom-nav-bg p-2 rounded-md',
               'hover:scale-105 transition-all duration-200',
@@ -76,10 +42,10 @@ export default function EventLists({ events }: Props) {
               rel="noopener noreferrer"
               target="_blank">
               <figure className={cn('w-full h-[160px] relative')}>
-                {event.image_url && (
+                {event.image_thumbnail && (
                   <Image
                     className={cn('rounded-md object-cover')}
-                    src={`https://g.nexonstatic.com${event.image_url}`}
+                    src={event.image_thumbnail}
                     alt={event.name}
                     fill
                     sizes="100"
@@ -89,24 +55,31 @@ export default function EventLists({ events }: Props) {
               </figure>
               <span className={cn('font-bold line-clamp-2 min-h-[56px]')}>{event.name}</span>
             </a>
-            <div className={cn('flex flex-col gap-[6px]')}>
+            <div className={cn('flex flex-col gap-[8px]')}>
               <p className={cn('text-sm text-gray-300 break-keep')}>[KST] {event.periodKst}</p>
-              {event.kms_url ? (
-                <a
-                  href={event.kms_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => handleKmsClick(e, event.kms_url!)}
-                  className={cn('cursor-pointer px-[10px] py-px bg-custom-green rounded-md', 'self-start')}>
-                  kms
-                </a>
-              ) : (
-                <button className={cn('px-[10px] py-px bg-red-400 rounded-md', 'self-start')}>gms only</button>
+              {event.summary && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedEvent(event)}
+                  className={cn(
+                    'cursor-pointer px-[10px] py-px bg-custom-lightgray rounded-md',
+                    'self-start text-white font-semibold text-[14px]',
+                    'hover:bg-gray-400 transition-all duration-200',
+                  )}>
+                  요약 보기
+                </button>
               )}
             </div>
           </li>
         ))}
       </ul>
+
+      {selectedEvent && (
+        <SummaryModal
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+        />
+      )}
     </section>
   );
 }

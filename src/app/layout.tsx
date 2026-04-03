@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${pretendard.variable}`}>
-      <body className="antialiased font-pretendard bg-custom-bg text-white flex flex-col min-h-dvh">
+      <body className="antialiased font-pretendard bg-custom-bg text-white flex flex-col min-h-dvh scrollbar-custom">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

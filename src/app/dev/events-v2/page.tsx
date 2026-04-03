@@ -57,7 +57,7 @@ function SummaryMarkdown({ value }: { value: string | null }) {
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        h1: ({ children }) => <h1 className={cn('mt-8 text-2xl font-bold first:mt-0')}>{children}</h1>,
+        h1: ({ children }) => <h1 className={cn('mt-8 text-[30px] font-bold first:mt-0')}>{children}</h1>,
         h2: ({ children }) => <h2 className={cn('mt-7 text-xl font-bold first:mt-0')}>{children}</h2>,
         h3: ({ children }) => <h3 className={cn('mt-6 text-lg font-semibold first:mt-0')}>{children}</h3>,
         p: ({ children }) => <p className={cn('leading-7 text-gray-100')}>{children}</p>,

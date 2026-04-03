@@ -22,6 +22,7 @@ type EventBarLayout = {
   id: string;
   name: string;
   href: string | null;
+  imageThumbnail: string | null;
   left: number;
   top: number;
   width: number;
@@ -109,6 +110,7 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
         id: event.id,
         name: event.name,
         href: event.gms_url,
+        imageThumbnail: event.image_thumbnail,
         left: startX,
         top,
         width: Math.max(endX - startX, COL_WIDTH),
@@ -183,15 +185,21 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
               href={bar.href}
               rel="noopener noreferrer"
               target="_blank"
-              className="absolute flex items-center border border-white bg-gray-500/50"
+              className="absolute flex items-center border border-gray-600 bg-gray-500/50"
               style={{
                 left: bar.left,
                 top: bar.top,
                 width: bar.width,
                 height: ROW_HEIGHT,
                 borderRadius: bar.borderRadius,
+                ...(bar.imageThumbnail && {
+                  backgroundImage: `linear-gradient(to left, rgba(38, 38, 38, 0) 0px, rgba(38, 38, 38, 1) 200px), url(${bar.imageThumbnail})`,
+                  backgroundSize: 'auto, 300px auto',
+                  backgroundPosition: '0 0, right 40%',
+                  backgroundRepeat: 'no-repeat, no-repeat',
+                }),
               }}>
-              <div className={cn('sticky left-1 px-2', 'max-w-full min-w-0')}>
+              <div className={cn('sticky left-0 px-2', 'max-w-full min-w-0')}>
                 <span className="truncate block text-[16px] font-bold text-white">{bar.name}</span>
               </div>
             </a>
@@ -206,8 +214,14 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                 width: bar.width,
                 height: ROW_HEIGHT,
                 borderRadius: bar.borderRadius,
+                ...(bar.imageThumbnail && {
+                  backgroundImage: `linear-gradient(to left, rgba(38, 38, 38, 0) 0px, rgba(38, 38, 38, 1) 200px), url(${bar.imageThumbnail})`,
+                  backgroundSize: 'auto, 300px auto',
+                  backgroundPosition: '0 0, right 40%',
+                  backgroundRepeat: 'no-repeat, no-repeat',
+                }),
               }}>
-              <div className={cn('sticky left-1 px-2', 'max-w-full min-w-0')}>
+              <div className={cn('sticky left-0 px-2', 'max-w-full min-w-0')}>
                 <span className="truncate block text-[16px] font-bold text-white">{bar.name}</span>
               </div>
             </div>

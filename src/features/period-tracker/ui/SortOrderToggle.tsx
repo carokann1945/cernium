@@ -15,7 +15,7 @@ type Props = {
 
 export function SortOrderToggle({ value, onChange }: Props) {
   return (
-    <div className={cn('flex gap-1', 'bg-custom-nav-bg rounded-lg', 'pl-4 sm:p-1')}>
+    <div className={cn('flex gap-1', 'bg-custom-nav-bg rounded-lg', 'ml-3 sm:ml-0 p-1')}>
       {SORT_OPTIONS.map(({ value: optionValue, label }) => (
         <button
           key={optionValue}

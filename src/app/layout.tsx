@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: 'Cernium | %s',
   },
   description:
-    'GMS 이벤트와 점검 공지를 자동으로 정리해 제공합니다. 진행 중 이벤트, 점검 일정, KMS 이벤트 매칭까지 한눈에 확인하세요.',
+    'GMS 이벤트와 점검 공지를 자동으로 정리해 제공합니다. 진행 중 이벤트, 점검 일정, 한글 번역 요약본까지 한눈에 확인하세요.',
   robots: {
     index: true,
     follow: true,

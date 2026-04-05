@@ -160,8 +160,9 @@ export default function SummaryModal({ event, onClose }: Props) {
                 rel="noopener noreferrer"
                 className={cn(
                   'inline-flex w-fit rounded-md bg-custom-green px-3 py-2 text-sm font-semibold text-black',
+                  'hover:bg-green-400 transition-all duration-200',
                 )}>
-                원문 보기
+                GMS 공지 보기
               </a>
             ) : null}
           </div>

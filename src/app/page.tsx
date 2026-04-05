@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     description: '진행중 이벤트, 점검 일정(KST), 한글 번역, 요약본까지 한눈에 확인',
     url: '/',
     siteName: 'Cernium',
-    images: [{ url: '/images/ogimage.png', width: 1200, height: 630 }],
+    images: [{ url: '/images/cernium-ogimage.png', width: 1200, height: 630 }],
     locale: 'ko_KR',
     type: 'website',
   },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Cernium | 점검 일정 & 진행중 이벤트',
     description: '진행중 이벤트, 점검 일정(KST), 한글 번역, 요약본까지 한눈에 확인',
-    images: ['/images/ogimage.png'],
+    images: ['/images/cernium-ogimage.png'],
   },
 };
 

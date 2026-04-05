@@ -67,14 +67,14 @@ export default function Header() {
             <Image src="/images/Cernium.png" alt="logo image" fill sizes="50" className="object-cover" />
           </figure>
           <span className={cn('font-bold text-[24px] md:text-[32px] text-white tracking-tight')}>Cernium</span>
-          <div
+          {/* <div
             className={cn(
               'w-[50px] h-[23px]',
               'rounded-full bg-blue-400 text-[14px] font-bold',
               'flex justify-center items-center',
             )}>
             BETA
-          </div>
+          </div> */}
         </div>
 
         {/* Center spacer — desktop only, grows to push right content */}

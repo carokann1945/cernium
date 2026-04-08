@@ -15,7 +15,8 @@ function isUpcoming(endIso: string | null, now: Temporal.Instant): boolean {
   }
 }
 
-function getStatus(startIso: string, now: Temporal.Instant): '점검 진행중' | '점검 예정' {
+function getStatus(startIso: string | null, now: Temporal.Instant): '점검 진행중' | '점검 예정' {
+  if (startIso == null) return '점검 예정';
   try {
     const start = Temporal.Instant.from(startIso);
     return Temporal.Instant.compare(start, now) <= 0 ? '점검 진행중' : '점검 예정';
@@ -28,7 +29,8 @@ function formatZdt(zdt: Temporal.ZonedDateTime): string {
   return `${pad(zdt.month)}.${pad(zdt.day)}(${DAY_ABBRS[zdt.dayOfWeek - 1]}) ${pad(zdt.hour)}:${pad(zdt.minute)}`;
 }
 
-function formatPeriodKst(startIso: string, endIso: string | null): string {
+function formatPeriodKst(startIso: string | null, endIso: string | null): string {
+  if (startIso == null) return '기간 정보 없음';
   try {
     const start = Temporal.Instant.from(startIso).toZonedDateTimeISO('Asia/Seoul');
     const startStr = formatZdt(start);
@@ -50,17 +52,14 @@ export default async function MaintenanceTracker() {
 
   // 현재 시각은 서버에서 한 번만 구하기
   const now = Temporal.Now.instant();
-
   // '점검 진행중' | '점검 예정' 정보를 포함한 점검 정보 만들기
   const upcoming: MaintenanceWithStatus[] = maintenances
-    .filter((m) => isUpcoming(m.end_at, now))
+    .filter((m) => m.start_at != null && isUpcoming(m.end_at, now))
     .map((m) => ({
       ...m,
       status: getStatus(m.start_at, now),
       periodKst: formatPeriodKst(m.start_at, m.end_at),
-    }))
-    // 최신 데이터 우선 (source_index가 클수록 최근 데이터)
-    .sort((a, b) => b.source_index - a.source_index);
+    }));
 
   return (
     <section className={cn('max-w-[1252px]', 'mt-[40px] mx-auto', 'flex flex-col gap-[8px]')}>
@@ -71,7 +70,7 @@ export default async function MaintenanceTracker() {
         <ul className={cn('flex flex-col gap-2', 'pl-4 xl:pl-0')}>
           {upcoming.map((m) => (
             <li key={m.id} className={cn('flex flex-col gap-1', 'text-sm')}>
-              <a href={m.url} target="_blank" rel="noopener noreferrer" className="hover:underline w-fit">
+              <a href={m.url ?? '#'} target="_blank" rel="noopener noreferrer" className="hover:underline w-fit">
                 {m.name}
               </a>
               <span className="text-gray-400">

@@ -12,6 +12,8 @@ GMS(글로벌 메이플스토리)의 점검 일정과 진행 중 이벤트를 �
 
 **Live** : https://cernium.app/
 
+<img src="./public/images/cernium-analytics.png" alt="cernium analytics 사진" width="500" />
+
 <br />
 
 ## 🤔 개발 동기

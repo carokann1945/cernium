@@ -61,6 +61,7 @@ GMS 공지는 영어와 해외 시간대(UTC, PDT) 기준으로 제공되어 한
 | 언어         | TypeScript 5                          |
 | 데이터베이스 | Supabase (PostgreSQL)                 |
 | 날짜/시간    | @js-temporal/polyfill (TC39 Temporal) |
+| 테스트       | Vitest                                |
 | 배포         | Vercel                                |
 
 <br />

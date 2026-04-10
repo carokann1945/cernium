@@ -8,7 +8,7 @@
   display: none;
 }
 .scrollbar-custom::-webkit-scrollbar-track {
-  background: #121316;
+  background: #323339;
   border-radius: 9999px;
 }
 .scrollbar-custom::-webkit-scrollbar-thumb {
@@ -21,8 +21,12 @@
 
 @theme inline {
   --font-pretendard: var(--font-pretendard), sans-serif;
-  --color-custom-nav-bg: #1d1f23;
-  --color-custom-bg: #121316;
+  --font-glegoo: var(--font-glegoo);
+  --font-ibmPlexSansKr: var(--font-ibmPlexSansKr);
+  --color-custom-nav-bg: #2c2d32;
+  --color-custom-bg: #323339;
   --color-custom-green: #51bb86;
   --color-custom-lightgray: #848589;
+  --color-main-white: #f9fbf4;
+  --color-sub-white: #bdbdbd;
 }

@@ -174,7 +174,7 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
         {dates.map((_, i) => (
           <div
             key={`col-${i}`}
-            className="absolute top-0 bottom-0 w-px bg-[#32353a]"
+            className="absolute top-0 bottom-0 w-px bg-gray-600"
             style={{ left: i * COL_WIDTH + COL_WIDTH / 2 }}
           />
         ))}
@@ -215,14 +215,14 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                 </div>
               )}
               <div className={cn('sticky left-0 px-2 z-10', 'max-w-full min-w-0')}>
-                <span className="truncate block text-[16px] font-bold text-white">{bar.name}</span>
+                <span className="font-glegoo truncate block text-[16px] font-bold text-main-white">{bar.name}</span>
               </div>
             </a>
           ) : (
             <div
               key={bar.id}
               aria-disabled="true"
-              className="absolute flex items-center border border-white bg-gray-500/50"
+              className="absolute flex items-center border border-main-white bg-gray-500/50"
               style={{
                 left: bar.left,
                 top: bar.top,
@@ -251,7 +251,7 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                 </div>
               )}
               <div className={cn('sticky left-0 px-2 z-10', 'max-w-full min-w-0')}>
-                <span className="truncate block text-[16px] font-bold text-white">{bar.name}</span>
+                <span className="truncate block text-[16px] font-bold text-main-white">{bar.name}</span>
               </div>
             </div>
           ),

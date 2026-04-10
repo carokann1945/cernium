@@ -1,9 +1,24 @@
 import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
+import { Glegoo, IBM_Plex_Sans_KR } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
+
+const glegoo = Glegoo({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  display: 'swap',
+  variable: '--font-glegoo',
+});
+
+const ibmPlexSansKr = IBM_Plex_Sans_KR({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  display: 'swap',
+  variable: '--font-ibmPlexSansKr',
+});
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -36,8 +51,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${pretendard.variable}`}>
-      <body className="antialiased font-pretendard bg-custom-bg text-white flex flex-col min-h-dvh scrollbar-custom">
+    <html lang="ko" className={`${pretendard.variable} ${glegoo.variable} ${ibmPlexSansKr.variable}`}>
+      <body className="antialiased font-ibmPlexSansKr bg-custom-bg text-white flex flex-col min-h-dvh scrollbar-custom">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

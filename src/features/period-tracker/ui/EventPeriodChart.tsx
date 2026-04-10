@@ -1,6 +1,7 @@
 'use client';
 
 import { Temporal } from '@js-temporal/polyfill';
+import Image from 'next/image';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { DAY_ABBRS, MONTH_ABBRS } from '@/constants/time';
 import { cn } from '@/lib/utils';
@@ -192,14 +193,28 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                 width: bar.width,
                 height: ROW_HEIGHT,
                 borderRadius: bar.borderRadius,
-                ...(bar.imageThumbnail && {
-                  backgroundImage: `linear-gradient(to left, rgba(38, 38, 38, 0) 0px, rgba(38, 38, 38, 1) 200px), url(${bar.imageThumbnail})`,
-                  backgroundSize: 'auto, 300px auto',
-                  backgroundPosition: '0 0, right 40%',
-                  backgroundRepeat: 'no-repeat, no-repeat',
-                }),
               }}>
-              <div className={cn('sticky left-0 px-2', 'max-w-full min-w-0')}>
+              {bar.imageThumbnail && (
+                <div
+                  className="absolute inset-0 overflow-hidden pointer-events-none"
+                  style={{ borderRadius: bar.borderRadius }}>
+                  <div className="absolute right-0 top-0 h-full" style={{ width: 300 }}>
+                    <Image
+                      src={bar.imageThumbnail}
+                      alt=""
+                      fill
+                      sizes="300px"
+                      className="object-cover"
+                      style={{ objectPosition: 'center 40%' }}
+                    />
+                  </div>
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: 'linear-gradient(to left, rgba(38,38,38,0) 0px, rgba(38,38,38,1) 200px)' }}
+                  />
+                </div>
+              )}
+              <div className={cn('sticky left-0 px-2 z-10', 'max-w-full min-w-0')}>
                 <span className="truncate block text-[16px] font-bold text-white">{bar.name}</span>
               </div>
             </a>
@@ -214,14 +229,28 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                 width: bar.width,
                 height: ROW_HEIGHT,
                 borderRadius: bar.borderRadius,
-                ...(bar.imageThumbnail && {
-                  backgroundImage: `linear-gradient(to left, rgba(38, 38, 38, 0) 0px, rgba(38, 38, 38, 1) 200px), url(${bar.imageThumbnail})`,
-                  backgroundSize: 'auto, 300px auto',
-                  backgroundPosition: '0 0, right 40%',
-                  backgroundRepeat: 'no-repeat, no-repeat',
-                }),
               }}>
-              <div className={cn('sticky left-0 px-2', 'max-w-full min-w-0')}>
+              {bar.imageThumbnail && (
+                <div
+                  className="absolute inset-0 overflow-hidden pointer-events-none"
+                  style={{ borderRadius: bar.borderRadius }}>
+                  <div className="absolute right-0 top-0 h-full" style={{ width: 300 }}>
+                    <Image
+                      src={bar.imageThumbnail}
+                      alt=""
+                      fill
+                      sizes="300px"
+                      className="object-cover"
+                      style={{ objectPosition: 'center 40%' }}
+                    />
+                  </div>
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: 'linear-gradient(to left, rgba(38,38,38,0) 0px, rgba(38,38,38,1) 200px)' }}
+                  />
+                </div>
+              )}
+              <div className={cn('sticky left-0 px-2 z-10', 'max-w-full min-w-0')}>
                 <span className="truncate block text-[16px] font-bold text-white">{bar.name}</span>
               </div>
             </div>

@@ -16,21 +16,15 @@ export default function SummaryMarkdown({ value }: { value: string | null }) {
         h1: ({ children }) => (
           <h1 className={cn('mt-8 text-2xl font-bold first:mt-0 text-custom-green')}>{children}</h1>
         ),
-        h2: ({ children }) => (
-          <h2 className={cn('mt-7 text-[22px] font-bold first:mt-0 text-custom-green')}>{children}</h2>
+        h2: ({ children }) => <h2 className={cn('text-2xl font-bold mt-5 text-custom-green')}>📝 {children}</h2>,
+        h3: ({ children }) => <h3 className={cn('text-xl font-bold mt-5 text-[#E7C976]')}>{children}</h3>,
+        h4: ({ children }) => <h4 className={cn('text-lg font-bold mt-5 text-[#88A7C4]')}>{children}</h4>,
+        p: ({ children }) => <p className={cn('leading-7 text-base text-sub-white')}>{children}</p>,
+        ul: ({ children }) => (
+          <ul className={cn('list-disc pl-5 mt-3 mb-5 text-base space-y-3 text-sub-white')}>{children}</ul>
         ),
-        h3: ({ children }) => (
-          <h3 className={cn('mt-6 text-[20px] font-semibold first:mt-0 text-[#FDE68A]')}>{children}</h3>
-        ),
-        h4: ({ children }) => (
-          <h4 className={cn('mt-6 text-[18px] font-semibold first:mt-0 text-blue-400')}>{children}</h4>
-        ),
-        p: ({ children }) => <p className={cn('leading-7 lg:text-base text-gray-300')}>{children}</p>,
-        ul: ({ children }) => <ul className={cn('list-disc text-[16px] space-y-2 pl-5 text-gray-300')}>{children}</ul>,
-        ol: ({ children }) => (
-          <ol className={cn('list-decimal text-[16px] space-y-2 pl-5 text-gray-300')}>{children}</ol>
-        ),
-        li: ({ children }) => <li className={cn('leading-7 text-[16px] text-gray-300')}>{children}</li>,
+        ol: ({ children }) => <ol className={cn('list-decimal pl-5 mb-5 text-base text-sub-white')}>{children}</ol>,
+        li: ({ children }) => <li className={cn('mb-3 text-base text-sub-white leading-7')}>{children}</li>,
         a: ({ children, href }) => (
           <a
             href={href}
@@ -41,7 +35,7 @@ export default function SummaryMarkdown({ value }: { value: string | null }) {
           </a>
         ),
         blockquote: ({ children }) => (
-          <blockquote className={cn('border-l-4 border-custom-green/70 pl-4 text-gray-300')}>{children}</blockquote>
+          <blockquote className={cn('border-l-4 border-custom-green/70 pl-4 text-sub-white')}>{children}</blockquote>
         ),
         pre: ({ children }) => (
           <pre className={cn('overflow-x-auto rounded-lg bg-black/30 p-4 text-sm')}>{children}</pre>

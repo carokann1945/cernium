@@ -44,7 +44,7 @@ export default function SummaryModal({ event, onClose }: Props) {
 
   return (
     <div
-      className={cn('fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm', 'px-5')}
+      className={cn('fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm', 'px-5')}
       onClick={() => history.back()}>
       <div
         className={cn(
@@ -59,10 +59,10 @@ export default function SummaryModal({ event, onClose }: Props) {
                 type="button"
                 aria-label="닫기"
                 onClick={() => history.back()}
-                className={cn('cursor-pointer shrink-0 rounded-md p-1 text-custom-lightgray hover:text-white')}>
+                className={cn('cursor-pointer shrink-0 rounded-md p-1 text-sub-white hover:text-main-white')}>
                 ✕
               </button>
-              <h1 className={cn('break-keep text-xl font-bold text-white')}>{event.name}</h1>
+              <h1 className={cn('break-keep text-xl font-bold')}>{event.name}</h1>
             </div>
 
             {event.image_thumbnail ? (
@@ -79,11 +79,11 @@ export default function SummaryModal({ event, onClose }: Props) {
 
             <dl className={cn('grid gap-3 text-sm')}>
               <div className={cn('grid gap-1')}>
-                <dt className={cn('text-custom-lightgray')}>시작 시각</dt>
+                <dt className={cn('text-sub-white')}>시작 시각</dt>
                 <dd>{formatDate(event.startAtIso)}</dd>
               </div>
               <div className={cn('grid gap-1')}>
-                <dt className={cn('text-custom-lightgray')}>종료 시각</dt>
+                <dt className={cn('text-sub-white')}>종료 시각</dt>
                 <dd>{formatDate(event.endAtIso)}</dd>
               </div>
             </dl>
@@ -94,8 +94,8 @@ export default function SummaryModal({ event, onClose }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  'inline-flex w-fit rounded-md bg-custom-green px-3 py-2 text-sm font-semibold text-black',
-                  'hover:bg-green-400 transition-all duration-200',
+                  'inline-flex w-fit rounded-md bg-custom-lightgray border border-gray-500 px-3 py-2 text-sm text-main-white',
+                  'hover:bg-custom-lightergray transition-all duration-100',
                 )}>
                 GMS 공지 보기
               </a>

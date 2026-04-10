@@ -158,10 +158,7 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                 style={{ left: x, width: COL_WIDTH, height: HEADER_HEIGHT }}>
                 <div className="absolute bottom-[3px] flex flex-col items-center gap-px">
                   <span
-                    className={cn(
-                      'text-[16px]',
-                      isFirstOfMonth ? 'font-semibold text-emerald-400' : 'text-custom-lightgray',
-                    )}>
+                    className={cn('text-[16px]', isFirstOfMonth ? 'font-semibold text-emerald-400' : 'text-sub-white')}>
                     {isFirstOfMonth ? monthName : dayName}
                   </span>
                   <span className="text-[16px] text-white">{date.day}</span>
@@ -215,7 +212,7 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                 </div>
               )}
               <div className={cn('sticky left-0 px-2 z-10', 'max-w-full min-w-0')}>
-                <span className="font-glegoo truncate block text-[16px] font-bold text-main-white">{bar.name}</span>
+                <span className="font-glegoo truncate block text-[16px] font-bold">{bar.name}</span>
               </div>
             </a>
           ) : (

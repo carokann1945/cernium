@@ -19,12 +19,12 @@ function DiscordLink() {
       className={cn(
         'w-[90px] h-[30px]',
         'flex gap-[8px] items-center',
-        'border border-custom-lightgray',
+        'border border-custom-lightergray',
         'px-1 py-1 rounded-md',
         'text-white',
       )}>
       <DiscordIcon className="w-5 h-5" />
-      <span className={cn('text-[12px] text-custom-lightgray')}>문의 제보</span>
+      <span className={cn('text-[12px] text-sub-white')}>문의 제보</span>
     </a>
   );
 }
@@ -39,14 +39,14 @@ export default function Footer() {
             <figure className={cn('relative w-[24px] h-[24px]')}>
               <Image src="/images/Cernium.png" alt="" fill sizes="24px" className="object-cover" />
             </figure>
-            <span className={cn('font-bold text-[16px] text-white')}>Cernium</span>
+            <span className={cn('font-bold text-[16px]')}>Cernium</span>
           </div>
           {/* 모바일에서만 보임 */}
           <div className="md:hidden">
             <DiscordLink />
           </div>
           {/* 잡다한 내용 */}
-          <div className={cn('flex flex-col gap-1 text-custom-lightgray text-[12px]')}>
+          <div className={cn('flex flex-col gap-1 text-sub-white text-[12px]')}>
             <p>by Kronos@Kwancha</p>
             <p>© NEXON Corporation. All Rights Reserved.</p>
             <p>본 사이트는 넥슨과 공식적으로 관련이 없습니다.</p>

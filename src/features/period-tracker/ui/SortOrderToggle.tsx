@@ -24,8 +24,8 @@ export function SortOrderToggle({ value, onChange }: Props) {
             'px-4 py-1.5',
             'rounded-md',
             'text-sm font-medium',
-            'transition-colors duration-150',
-            value === optionValue ? 'bg-white/15 text-white' : 'text-custom-lightgray hover:text-white',
+            'transition-colors duration-150 cursor-pointer',
+            value === optionValue ? 'bg-white/15' : 'text-sub-white hover:text-main-white',
           )}>
           {label}
         </button>

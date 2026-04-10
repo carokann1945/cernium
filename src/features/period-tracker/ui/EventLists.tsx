@@ -62,12 +62,12 @@ export default function EventLists({ events }: Props) {
                   />
                 )}
               </figure>
-              <span className={cn('font-glegoo text-[17px] text-main-white font-[700] line-clamp-2 min-h-[56px]')}>
+              <span className={cn('font-glegoo text-[17px] text-main-white font-[700] line-clamp-2 min-h-[86px]')}>
                 {event.name}
               </span>
             </a>
             <div className={cn('flex flex-col gap-[8px]')}>
-              <p className={cn('text-sm text-sub-white break-keep')}>[KST] {event.periodKst}</p>
+              <p className={cn('text-sub-white break-keep')}>{event.periodKst}</p>
               {event.summary && (
                 <button
                   type="button"
@@ -75,9 +75,9 @@ export default function EventLists({ events }: Props) {
                   onFocus={prefetchSummaryModal}
                   onClick={() => setSelectedEvent(event)}
                   className={cn(
-                    'cursor-pointer px-[10px] py-[2px] bg-gray-600 rounded-sm',
-                    'self-start text-sub-white text-[14px]',
-                    'hover:bg-gray-400 transition-all duration-100',
+                    'cursor-pointer px-[10px] py-[2px] bg-custom-lightgray rounded-sm border border-gray-500',
+                    'self-start text-main-white text-[14px]',
+                    'hover:bg-custom-lightergray transition-all duration-100',
                   )}>
                   한글 번역
                 </button>

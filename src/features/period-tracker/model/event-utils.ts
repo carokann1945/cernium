@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { DAY_ABBRS } from '../../../constants/time';
 import type { Event, OngoingEventView, SortOrder } from '../types/event';
 
 const KST = 'Asia/Seoul';
-const DAY_ABBRS = ['월', '화', '수', '목', '금', '토', '일'];
 
 function formatKST(zdt: Temporal.ZonedDateTime): string {
   return `${pad(zdt.month)}.${pad(zdt.day)}(${DAY_ABBRS[zdt.dayOfWeek - 1]}) ${pad(zdt.hour)}:${pad(zdt.minute)}`;

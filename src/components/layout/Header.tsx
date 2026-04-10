@@ -64,7 +64,7 @@ export default function Header() {
             'cursor-pointer',
           )}>
           <figure className={cn('hidden sm:inline w-[35px] h-[35px]', 'relative')}>
-            <Image src="/images/Cernium.png" alt="logo image" fill sizes="50" className="object-cover" />
+            <Image src="/images/Cernium.png" alt="" fill sizes="35px" className="object-cover" />
           </figure>
           <span className={cn('font-bold text-[24px] md:text-[32px] text-white tracking-tight')}>Cernium</span>
           {/* <div

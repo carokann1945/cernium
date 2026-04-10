@@ -1,10 +1,20 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { OngoingEventView } from '../types/event';
-import SummaryModal from './SummaryModal';
+
+const importSummaryModal = () => import('./SummaryModal');
+const importSummaryMarkdown = () => import('./SummaryMarkdown');
+
+const prefetchSummaryModal = () => {
+  void importSummaryModal();
+  void importSummaryMarkdown();
+};
+
+const SummaryModal = dynamic(importSummaryModal, { ssr: false });
 
 type Props = {
   events: OngoingEventView[];
@@ -17,7 +27,7 @@ export default function EventLists({ events }: Props) {
     return (
       <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[50px]')}>
         <figure className={cn('relative w-[50px] h-[50px]')}>
-          <Image src="/images/dawn.png" alt="데이터 없음 이미지" fill sizes="50" className="object-cover" />
+          <Image src="/images/dawn.png" alt="" fill sizes="50px" className="object-cover" />
         </figure>
         <h2 className={cn('text-xl font-bold')}>진행 중 이벤트가 없어요.</h2>
       </section>
@@ -48,8 +58,7 @@ export default function EventLists({ events }: Props) {
                     src={event.image_thumbnail}
                     alt={event.name}
                     fill
-                    sizes="100"
-                    loading="eager"
+                    sizes="284px"
                   />
                 )}
               </figure>
@@ -60,6 +69,8 @@ export default function EventLists({ events }: Props) {
               {event.summary && (
                 <button
                   type="button"
+                  onMouseEnter={prefetchSummaryModal}
+                  onFocus={prefetchSummaryModal}
                   onClick={() => setSelectedEvent(event)}
                   className={cn(
                     'cursor-pointer px-[10px] py-px bg-custom-lightgray rounded-md',
@@ -74,12 +85,7 @@ export default function EventLists({ events }: Props) {
         ))}
       </ul>
 
-      {selectedEvent && (
-        <SummaryModal
-          event={selectedEvent}
-          onClose={() => setSelectedEvent(null)}
-        />
-      )}
+      {selectedEvent && <SummaryModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
     </section>
   );
 }

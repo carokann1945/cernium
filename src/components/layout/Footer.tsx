@@ -37,7 +37,7 @@ export default function Footer() {
         <div className={cn('flex flex-col gap-3')}>
           <div className={cn('flex gap-2 items-center')}>
             <figure className={cn('relative w-[24px] h-[24px]')}>
-              <Image src="/images/Cernium.png" alt="Cernium logo" fill sizes="24px" className="object-cover" />
+              <Image src="/images/Cernium.png" alt="" fill sizes="24px" className="object-cover" />
             </figure>
             <span className={cn('font-bold text-[16px] text-white')}>Cernium</span>
           </div>

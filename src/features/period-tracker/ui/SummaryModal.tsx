@@ -62,7 +62,7 @@ export default function SummaryModal({ event, onClose }: Props) {
                 className={cn('cursor-pointer shrink-0 rounded-md p-1 text-sub-white hover:text-main-white')}>
                 ✕
               </button>
-              <h1 className={cn('break-keep text-xl font-bold')}>{event.name}</h1>
+              <h1 className={cn('font-glegoo font-[700] break-keep text-xl')}>{event.name}</h1>
             </div>
 
             {event.image_thumbnail ? (

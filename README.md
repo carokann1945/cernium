@@ -54,15 +54,16 @@ GMS 공지는 영어와 해외 시간대(UTC, PDT) 기준으로 제공되어 한
 
 ## 🛠️ 기술 스택
 
-| 분류         | 사용 기술                             |
-| ------------ | ------------------------------------- |
-| 프레임워크   | Next.js 16 (App Router)               |
-| UI           | React 19, Tailwind CSS 4              |
-| 언어         | TypeScript 5                          |
-| 데이터베이스 | Supabase (PostgreSQL)                 |
-| 날짜/시간    | @js-temporal/polyfill (TC39 Temporal) |
-| 테스트       | Vitest                                |
-| 배포         | Vercel                                |
+| 분류          | 사용 기술                             |
+| ------------- | ------------------------------------- |
+| 프레임워크    | Next.js 16 (App Router)               |
+| UI            | React 19, Tailwind CSS 4              |
+| 언어          | TypeScript 5                          |
+| 데이터베이스  | Supabase (PostgreSQL)                 |
+| 날짜/시간     | @js-temporal/polyfill (TC39 Temporal) |
+| 테스트        | Vitest                                |
+| 배포          | Vercel                                |
+| 이미지 최적화 | Cloudinary                            |
 
 <br />
 
@@ -143,6 +144,7 @@ cp .env.example .env.local
 - `NEXT_PUBLIC_SUPABASE_URL`: Supabase 프로젝트 URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon public key
 - `REVALIDATION_SECRET`: `/api/revalidate` 호출 시 사용하는 secret
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` cloudinary_cloud_name
 
 <br />
 

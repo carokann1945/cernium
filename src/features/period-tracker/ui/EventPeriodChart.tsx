@@ -203,6 +203,7 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                       sizes="300px"
                       className="object-cover"
                       style={{ objectPosition: 'center 40%' }}
+                      unoptimized
                     />
                   </div>
                   <div
@@ -239,6 +240,7 @@ export default function EventPeriodChart({ events, initialNowIso }: Props) {
                       sizes="300px"
                       className="object-cover"
                       style={{ objectPosition: 'center 40%' }}
+                      unoptimized
                     />
                   </div>
                   <div

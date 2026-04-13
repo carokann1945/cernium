@@ -59,6 +59,7 @@ export default function EventLists({ events }: Props) {
                     alt={event.name}
                     fill
                     sizes="284px"
+                    unoptimized
                   />
                 )}
               </figure>

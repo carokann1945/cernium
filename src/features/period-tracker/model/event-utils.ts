@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { toCloudinaryFetchUrl } from '@/lib/cloudinary/fetch';
 import { DAY_ABBRS } from '../../../constants/time';
 import type { Event, OngoingEventView, SortOrder } from '../types/event';
 
@@ -34,7 +35,7 @@ export function toOngoingEventView(event: Event, now: Temporal.ZonedDateTime): O
     id: event.id,
     name: event.name,
     live_date: event.live_date,
-    image_thumbnail: event.image_thumbnail,
+    image_thumbnail: toCloudinaryFetchUrl(event.image_thumbnail),
     gms_url: event.gms_url,
     summary: event.summary,
     periodKst,
@@ -48,9 +49,9 @@ export function sortOngoingEventsByLatest(events: OngoingEventView[]): OngoingEv
 }
 
 export function sortOngoingEventsByDeadline(events: OngoingEventView[]): OngoingEventView[] {
-  return events.slice().sort((a, b) =>
-    Temporal.Instant.compare(Temporal.Instant.from(a.endAtIso), Temporal.Instant.from(b.endAtIso)),
-  );
+  return events
+    .slice()
+    .sort((a, b) => Temporal.Instant.compare(Temporal.Instant.from(a.endAtIso), Temporal.Instant.from(b.endAtIso)));
 }
 
 export function sortOngoingEvents(events: OngoingEventView[], order: SortOrder): OngoingEventView[] {

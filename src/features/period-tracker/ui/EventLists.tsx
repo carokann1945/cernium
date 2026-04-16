@@ -36,7 +36,11 @@ export default function EventLists({ events }: Props) {
 
   return (
     <section className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[50px]')}>
-      <ul className={cn('w-full', 'grid gap-3 grid-cols-[repeat(auto-fit,304px)] justify-center')}>
+      <ul
+        className={cn(
+          'w-full pl-4 xl:pl-0',
+          'grid gap-3 grid-cols-[repeat(auto-fit,304px)] justify-center sm:justify-start',
+        )}>
         {events.map((event) => (
           <li
             key={event.id}

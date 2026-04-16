@@ -16,9 +16,15 @@ export default function SummaryMarkdown({ value }: { value: string | null }) {
         h1: ({ children }) => (
           <h1 className={cn('mt-8 text-2xl font-bold first:mt-0 text-custom-green')}>{children}</h1>
         ),
-        h2: ({ children }) => <h2 className={cn('text-2xl font-bold mt-5 text-custom-green')}>📝 {children}</h2>,
-        h3: ({ children }) => <h3 className={cn('text-xl font-bold mt-5 text-[#E7C976]')}>{children}</h3>,
-        h4: ({ children }) => <h4 className={cn('text-lg font-bold mt-5 text-[#88A7C4]')}>{children}</h4>,
+        h2: ({ children }) => (
+          <h2 className={cn('text-2xl font-bold mt-5 text-rose-300 underline underline-offset-7')}>📌 {children}</h2>
+        ),
+        h3: ({ children }) => (
+          <h3 className={cn('text-xl font-bold mt-5 text-emerald-300 underline underline-offset-7')}>{children}</h3>
+        ),
+        h4: ({ children }) => (
+          <h4 className={cn('text-lg font-bold mt-5 text-sky-300 underline underline-offset-7')}>{children}</h4>
+        ),
         p: ({ children }) => <p className={cn('leading-7 text-base text-sub-white')}>{children}</p>,
         ul: ({ children }) => (
           <ul className={cn('list-disc pl-5 mt-3 mb-5 text-base space-y-3 text-sub-white')}>{children}</ul>
@@ -57,7 +63,7 @@ export default function SummaryMarkdown({ value }: { value: string | null }) {
         tr: ({ children }) => <tr className={cn('border-b border-white/10 align-top text-gray-300')}>{children}</tr>,
         th: ({ children }) => <th className={cn('px-3 py-2 font-semibold text-gray-300')}>{children}</th>,
         td: ({ children }) => <td className={cn('px-3 py-2 leading-7 text-gray-300')}>{children}</td>,
-        strong: ({ children }) => <strong className={cn('font-normal')}>{children}</strong>,
+        strong: ({ children }) => <strong className={cn('font-normal text-gray-200')}>{children}</strong>,
       }}>
       {value}
     </ReactMarkdown>

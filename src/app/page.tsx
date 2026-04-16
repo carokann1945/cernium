@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import MaintenanceTracker from '@/features/maintenance-tracker/MaintenanceTracker';
 import { MaintenanceTrackerSkeleton } from '@/features/maintenance-tracker/MaintenanceTrackerSkeleton';
+import NewsTracker from '@/features/news-tracker/NewsTracker';
+import { NewsTrackerSkeleton } from '@/features/news-tracker/NewsTrackerSkeleton';
 import PeriodTracker from '@/features/period-tracker/PeriodTracker';
 import { PeriodTrackerSkeleton } from '@/features/period-tracker/PeriodTrackerSkeleton';
 
@@ -33,6 +35,9 @@ export default function Home() {
       </Suspense>
       <Suspense fallback={<PeriodTrackerSkeleton />}>
         <PeriodTracker />
+      </Suspense>
+      <Suspense fallback={<NewsTrackerSkeleton />}>
+        <NewsTracker />
       </Suspense>
     </>
   );

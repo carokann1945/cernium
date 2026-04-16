@@ -4,46 +4,44 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import type { OngoingEventView } from '../types/event';
+import type { NewsView } from '../types/news';
 
-const importSummaryModal = () => import('./SummaryModal');
-const importSummaryMarkdown = () => import('./SummaryMarkdown');
+const importNewsModal = () => import('./NewsModal');
 
-const prefetchSummaryModal = () => {
-  void importSummaryModal();
-  void importSummaryMarkdown();
+const prefetchNewsModal = () => {
+  void importNewsModal();
 };
 
-const SummaryModal = dynamic(importSummaryModal, { ssr: false });
+const NewsModal = dynamic(importNewsModal, { ssr: false });
 
 type Props = {
-  events: OngoingEventView[];
+  news: NewsView[];
 };
 
-export default function EventLists({ events }: Props) {
-  const [selectedEvent, setSelectedEvent] = useState<OngoingEventView | null>(null);
+export default function NewsLists({ news }: Props) {
+  const [selectedNews, setSelectedNews] = useState<NewsView | null>(null);
 
-  if (events.length === 0) {
+  if (news.length === 0) {
     return (
-      <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[50px]')}>
+      <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[26px]')}>
         <figure className={cn('relative w-[50px] h-[50px]')}>
           <Image src="/images/dawn.png" alt="" fill sizes="50px" className="object-cover" />
         </figure>
-        <h2 className={cn('text-xl font-bold')}>진행 중 이벤트가 없어요.</h2>
+        <h2 className={cn('text-xl font-bold')}>뉴스가 없어요.</h2>
       </section>
     );
   }
 
   return (
-    <section className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[50px]')}>
+    <section className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[26px]')}>
       <ul
         className={cn(
           'w-full pl-4 xl:pl-0',
           'grid gap-3 grid-cols-[repeat(auto-fit,304px)] justify-center sm:justify-start',
         )}>
-        {events.map((event) => (
+        {news.map((item) => (
           <li
-            key={event.id}
+            key={item.id}
             className={cn(
               'w-[300px] min-h-[310px]',
               'flex flex-col justify-between',
@@ -52,15 +50,25 @@ export default function EventLists({ events }: Props) {
             )}>
             <a
               className={cn('cursor-pointer w-full', 'flex flex-col gap-[8px]')}
-              href={event.gms_url ?? '#'}
+              href={item.url ?? '#'}
               rel="noopener noreferrer"
               target="_blank">
               <figure className={cn('w-full h-[160px] relative')}>
-                {event.image_thumbnail && (
+                {item.isNew && (
+                  <span
+                    className={cn(
+                      'absolute top-2 left-2 z-10',
+                      'px-[8px] py-[2px]',
+                      'bg-red-500 text-main-white text-[12px] font-bold rounded-sm',
+                    )}>
+                    NEW
+                  </span>
+                )}
+                {item.image_thumbnail && (
                   <Image
                     className={cn('rounded-md object-cover')}
-                    src={event.image_thumbnail}
-                    alt={event.name}
+                    src={item.image_thumbnail}
+                    alt={item.name}
                     fill
                     sizes="284px"
                     unoptimized
@@ -68,23 +76,23 @@ export default function EventLists({ events }: Props) {
                 )}
               </figure>
               <span className={cn('font-glegoo text-[17px] text-main-white font-[700] line-clamp-3 min-h-[86px]')}>
-                {event.name}
+                {item.name}
               </span>
             </a>
             <div className={cn('flex flex-col gap-[8px]')}>
-              <p className={cn('text-sub-white break-keep')}>{event.periodKst}</p>
-              {event.summary && (
+              <p className={cn('text-sub-white break-keep')}>{item.liveDateKst}</p>
+              {item.translation && (
                 <button
                   type="button"
-                  onMouseEnter={prefetchSummaryModal}
-                  onFocus={prefetchSummaryModal}
-                  onClick={() => setSelectedEvent(event)}
+                  onMouseEnter={prefetchNewsModal}
+                  onFocus={prefetchNewsModal}
+                  onClick={() => setSelectedNews(item)}
                   className={cn(
                     'cursor-pointer px-[10px] py-[2px] bg-custom-lightgray rounded-sm border border-gray-500',
                     'self-start text-main-white text-[14px]',
                     'hover:bg-custom-lightergray transition-all duration-100',
                   )}>
-                  한글 요약 + 전체 번역
+                  한글 요약
                 </button>
               )}
             </div>
@@ -92,7 +100,7 @@ export default function EventLists({ events }: Props) {
         ))}
       </ul>
 
-      {selectedEvent && <SummaryModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
+      {selectedNews && <NewsModal news={selectedNews} onClose={() => setSelectedNews(null)} />}
     </section>
   );
 }

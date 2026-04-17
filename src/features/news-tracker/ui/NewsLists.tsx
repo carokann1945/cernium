@@ -23,17 +23,17 @@ export default function NewsLists({ news }: Props) {
 
   if (news.length === 0) {
     return (
-      <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[26px]')}>
-        <figure className={cn('relative w-[50px] h-[50px]')}>
+      <section className={cn('max-w-[1252px]', 'flex gap-[8px] items-center', 'mx-auto my-[16px]')}>
+        <figure className={cn('relative w-[50px] h-[65px]')}>
           <Image src="/images/dawn.png" alt="" fill sizes="50px" className="object-cover" />
         </figure>
-        <h2 className={cn('text-xl font-bold')}>뉴스가 없어요.</h2>
+        <h2 className={cn('text-lg font-bold text-sub-white')}>뉴스가 없어요.</h2>
       </section>
     );
   }
 
   return (
-    <section className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[26px]')}>
+    <section className={cn('max-w-[1252px]', 'flex flex-col gap-[16px]', 'mx-auto my-[16px]')}>
       <ul
         className={cn(
           'w-full pl-4 xl:pl-0',

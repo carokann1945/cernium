@@ -6,6 +6,8 @@ import NewsTracker from '@/features/news-tracker/NewsTracker';
 import { NewsTrackerSkeleton } from '@/features/news-tracker/NewsTrackerSkeleton';
 import PeriodTracker from '@/features/period-tracker/PeriodTracker';
 import { PeriodTrackerSkeleton } from '@/features/period-tracker/PeriodTrackerSkeleton';
+import { getContentModeFromCookies } from '@/features/world-filter/model/content-mode-cookie';
+import ContentModeSelect from '@/features/world-filter/ui/ContentModeSelect';
 
 export const metadata: Metadata = {
   keywords: ['메이플 이벤트', '메이플 점검', '메이플 일정', '메이플 이벤트 정리'],
@@ -27,17 +29,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const contentMode = await getContentModeFromCookies();
+
   return (
     <>
+      <ContentModeSelect value={contentMode} />
       <Suspense fallback={<MaintenanceTrackerSkeleton />}>
-        <MaintenanceTracker />
+        <MaintenanceTracker contentMode={contentMode} />
       </Suspense>
       <Suspense fallback={<PeriodTrackerSkeleton />}>
-        <PeriodTracker />
+        <PeriodTracker contentMode={contentMode} />
       </Suspense>
       <Suspense fallback={<NewsTrackerSkeleton />}>
-        <NewsTracker />
+        <NewsTracker contentMode={contentMode} />
       </Suspense>
     </>
   );

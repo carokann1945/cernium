@@ -1,16 +1,21 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { connection } from 'next/server';
 import { cn } from '@/lib/utils';
+import type { ContentMode } from '../world-filter/model/content-mode';
 import { getCachedNews } from './model/news';
 import { toNewsView } from './model/news-utils';
 import NewsTrackerClient from './ui/NewsTrackerClient';
 
 const KST = 'Asia/Seoul';
 
-export default async function NewsTracker() {
+type Props = {
+  contentMode: ContentMode;
+};
+
+export default async function NewsTracker({ contentMode }: Props) {
   await connection();
 
-  const rawNews = await getCachedNews();
+  const rawNews = await getCachedNews(contentMode);
 
   if (rawNews === null) {
     return <p className={cn('w-full', 'mt-10', 'text-center')}>뉴스 데이터를 불러오지 못했습니다.</p>;

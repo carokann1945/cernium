@@ -2,6 +2,7 @@ export interface News {
   id: string;
   created_at: string;
   name: string | null;
+  is_mscw: boolean | null;
   live_date: string | null;
   url: string | null;
   image_thumbnail: string | null;

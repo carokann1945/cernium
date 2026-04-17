@@ -27,6 +27,7 @@ function createMaintenance(overrides: Partial<Maintenance> = {}): Maintenance {
   return {
     id: 'maintenance-1',
     name: 'Scheduled Maintenance',
+    is_mscw: null,
     live_date: '2026-04-09T00:00:00Z',
     start_at: '2026-04-10T01:00:00Z',
     end_at: '2026-04-10T05:30:00Z',
@@ -35,8 +36,8 @@ function createMaintenance(overrides: Partial<Maintenance> = {}): Maintenance {
   };
 }
 
-async function renderTracker(): Promise<string> {
-  const element = await MaintenanceTracker();
+async function renderTracker(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
+  const element = await MaintenanceTracker({ contentMode });
   return renderToStaticMarkup(element);
 }
 
@@ -58,10 +59,11 @@ describe('MaintenanceTracker', () => {
   it('데이터 조회 실패 시 에러 문구를 렌더링한다', async () => {
     mockedGetCachedMaintenances.mockResolvedValue(null);
 
-    const markup = await renderTracker();
+    const markup = await renderTracker('classic');
 
     expect(markup).toContain('점검 데이터를 불러오지 못했습니다. (500)');
     expect(mockedConnection).toHaveBeenCalledTimes(1);
+    expect(mockedGetCachedMaintenances).toHaveBeenCalledWith('classic');
   });
 
   it('진행 예정이거나 진행 중인 점검이 없으면 빈 상태 문구를 렌더링한다', async () => {
@@ -80,11 +82,12 @@ describe('MaintenanceTracker', () => {
       }),
     ]);
 
-    const markup = await renderTracker();
+    const markup = await renderTracker('gms');
 
     expect(markup).toContain('진행 예정이거나 진행 중인 점검이 없습니다');
     expect(markup).not.toContain('Already Finished');
     expect(markup).not.toContain('Missing Start Date');
+    expect(mockedGetCachedMaintenances).toHaveBeenCalledWith('gms');
   });
 
   it('진행 중, 예정, 잘못된 날짜 문자열을 현재 동작대로 렌더링한다', async () => {
@@ -134,5 +137,6 @@ describe('MaintenanceTracker', () => {
     expect(markup).toContain('href="https://www.nexon.com/maplestory/news/maintenance/ongoing"');
     expect(markup).toContain('href="https://www.nexon.com/maplestory/news/maintenance/upcoming"');
     expect(markup).toContain('href="#"');
+    expect(mockedGetCachedMaintenances).toHaveBeenCalledWith('all');
   });
 });

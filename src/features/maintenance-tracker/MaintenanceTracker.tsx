@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { connection } from 'next/server';
 import { DAY_ABBRS } from '@/constants/time';
 import { cn, pad } from '@/lib/utils';
+import type { ContentMode } from '../world-filter/model/content-mode';
 import { getCachedMaintenances } from './model/maintenances';
 import type { MaintenanceWithStatus } from './types/maintenance';
 
@@ -42,9 +43,13 @@ function formatPeriodKst(startIso: string | null, endIso: string | null): string
   }
 }
 
-export default async function MaintenanceTracker() {
+type Props = {
+  contentMode: ContentMode;
+};
+
+export default async function MaintenanceTracker({ contentMode }: Props) {
   await connection();
-  const maintenances = await getCachedMaintenances();
+  const maintenances = await getCachedMaintenances(contentMode);
 
   if (maintenances === null) {
     return <p className={cn('w-full', 'mt-2', 'text-center', 'text-sm')}>점검 데이터를 불러오지 못했습니다. (500)</p>;
@@ -62,7 +67,7 @@ export default async function MaintenanceTracker() {
     }));
 
   return (
-    <section className={cn('max-w-[1252px]', 'mt-[40px] mx-auto', 'flex flex-col gap-[8px]')}>
+    <section className={cn('max-w-[1252px]', 'mt-[26px] mx-auto', 'flex flex-col gap-[8px]')}>
       <h2 className="text-2xl font-bold text-main-white pl-4 xl:pl-0">점검 일정</h2>
       {upcoming.length === 0 ? (
         <p className="text-sub-white pl-4 xl:pl-0">진행 예정이거나 진행 중인 점검이 없습니다</p>

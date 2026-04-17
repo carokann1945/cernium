@@ -1,6 +1,7 @@
 export interface Event {
   id: string;
   name: string;
+  is_mscw: boolean | null;
   live_date: string | null;
   start_at: string | null;
   end_at: string | null;

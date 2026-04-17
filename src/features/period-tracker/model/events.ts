@@ -1,10 +1,11 @@
 import { cacheTag, cacheLife } from 'next/cache';
 import { createClient } from '@/lib/supabase/client';
+import { filterByContentMode, type ContentMode } from '../../world-filter/model/content-mode';
 import type { Event } from '../types/event';
 
 export const EVENTS_CACHE_TAG = 'events_v2' as const;
 
-export async function getCachedEvents(): Promise<Event[] | null> {
+export async function getCachedEvents(contentMode: ContentMode): Promise<Event[] | null> {
   'use cache';
   cacheTag(EVENTS_CACHE_TAG);
   cacheLife({ stale: 3600, revalidate: 3600, expire: 86400 });
@@ -16,5 +17,6 @@ export async function getCachedEvents(): Promise<Event[] | null> {
     console.error('[events_v2] Supabase query failed:', error.message);
     return null;
   }
-  return (data as Event[]) ?? null;
+
+  return data ? filterByContentMode(data as Event[], contentMode) : null;
 }

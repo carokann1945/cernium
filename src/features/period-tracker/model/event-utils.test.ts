@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { Event, OngoingEventView } from '../types/event';
 import {
   sortOngoingEvents,
@@ -8,10 +8,15 @@ import {
   toOngoingEventView,
 } from './event-utils';
 
+vi.mock('@/lib/cloudinary/fetch', () => ({
+  toCloudinaryFetchUrl: vi.fn((src: string | null | undefined) => src ?? null),
+}));
+
 function createEvent(overrides: Partial<Event> = {}): Event {
   return {
     id: 'event-1',
     name: 'Golden Giveaway',
+    is_mscw: null,
     live_date: '2026-03-31T00:00:00Z',
     start_at: '2026-04-01T00:00:00Z',
     end_at: '2026-04-02T12:30:00Z',

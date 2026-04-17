@@ -97,7 +97,7 @@ export default function SummaryModal({ event, onClose }: Props) {
                   'inline-flex w-fit rounded-md bg-custom-lightgray border border-gray-500 px-3 py-2 text-sm text-main-white',
                   'hover:bg-custom-lightergray transition-all duration-100',
                 )}>
-                GMS 공지 보기
+                원문 보기
               </a>
             ) : null}
           </div>

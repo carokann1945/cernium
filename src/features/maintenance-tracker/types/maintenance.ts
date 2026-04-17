@@ -1,6 +1,7 @@
 export interface Maintenance {
   id: string;
   name: string;
+  is_mscw: boolean | null;
   live_date: string | null; // ISO UTC — 공지 게시일
   start_at: string | null; // ISO UTC
   end_at: string | null; // ISO UTC, null이면 종료 시간 미정

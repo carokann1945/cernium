@@ -1,16 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { DAY_ABBRS } from '@/constants/time';
 import { toCloudinaryFetchUrl } from '@/lib/cloudinary/fetch';
-import { DAY_ABBRS } from '../../../constants/time';
+import { pad } from '@/lib/utils';
 import type { Event, OngoingEventView, SortOrder } from '../types/event';
-
-const KST = 'Asia/Seoul';
 
 function formatKST(zdt: Temporal.ZonedDateTime): string {
   return `${pad(zdt.month)}.${pad(zdt.day)}(${DAY_ABBRS[zdt.dayOfWeek - 1]}) ${pad(zdt.hour)}:${pad(zdt.minute)}`;
-}
-
-function pad(n: number) {
-  return String(n).padStart(2, '0');
 }
 
 export function toOngoingEventView(event: Event, now: Temporal.ZonedDateTime): OngoingEventView | null {
@@ -20,8 +15,8 @@ export function toOngoingEventView(event: Event, now: Temporal.ZonedDateTime): O
   let end: Temporal.ZonedDateTime;
 
   try {
-    start = Temporal.Instant.from(event.start_at).toZonedDateTimeISO(KST);
-    end = Temporal.Instant.from(event.end_at).toZonedDateTimeISO(KST);
+    start = Temporal.Instant.from(event.start_at).toZonedDateTimeISO('Asia/Seoul');
+    end = Temporal.Instant.from(event.end_at).toZonedDateTimeISO('Asia/Seoul');
   } catch {
     return null;
   }

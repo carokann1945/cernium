@@ -6,8 +6,6 @@ import { fetchNews } from './model/fetch-news';
 import { toNewsView } from './model/news-utils';
 import NewsClient from './ui/NewsClient';
 
-const KST = 'Asia/Seoul';
-
 type Props = {
   gameVersion: GameVersion;
 };
@@ -28,7 +26,7 @@ export default async function NewsServer({ gameVersion }: Props) {
 
   const lastUpdated = latestCreatedAt
     ? (() => {
-        const zdt = Temporal.Instant.from(latestCreatedAt).toZonedDateTimeISO(KST);
+        const zdt = Temporal.Instant.from(latestCreatedAt).toZonedDateTimeISO('Asia/Seoul');
         return `${zdt.year}.${String(zdt.month).padStart(2, '0')}.${String(zdt.day).padStart(2, '0')}`;
       })()
     : '';

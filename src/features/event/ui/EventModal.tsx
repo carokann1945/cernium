@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useHistoryModal } from '@/app/hooks/useHistoryModal';
 import MarkdownRenderer from '@/components/markdown/MarkdownRenderer';
 import { cn } from '@/lib/utils';
 import type { OngoingEventView } from '../types/event';
@@ -25,20 +25,7 @@ function formatDate(value: string | null) {
 }
 
 export default function EventModal({ event, onClose }: Props) {
-  useEffect(() => {
-    history.pushState({ modal: true }, '');
-    document.body.style.overflow = 'hidden';
-
-    const handlePopState = () => {
-      onClose();
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-      document.body.style.overflow = '';
-    };
-  }, [onClose]);
+  useHistoryModal(onClose);
 
   return (
     <div

@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useHistoryModal } from '@/app/hooks/useHistoryModal';
 import { cn } from '@/lib/utils';
 import type { NewsView } from '../types/news';
 
@@ -14,20 +14,7 @@ type Props = {
 };
 
 export default function NewsModal({ news, onClose }: Props) {
-  useEffect(() => {
-    history.pushState({ modal: true }, '');
-    document.body.style.overflow = 'hidden';
-
-    const handlePopState = () => {
-      onClose();
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-      document.body.style.overflow = '';
-    };
-  }, [onClose]);
+  useHistoryModal(onClose);
 
   return (
     <div

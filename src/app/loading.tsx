@@ -1,6 +1,6 @@
 import { EventSkeleton } from '@/features/event/EventSkeleton';
 import { MaintenanceSkeleton } from '@/features/maintenance/MaintenanceSkeleton';
-import { NewsTrackerSkeleton } from '@/features/news-tracker/NewsTrackerSkeleton';
+import { NewsSkeleton } from '@/features/news/NewsSkeleton';
 import ContentModeSelect from '@/features/world-filter/ui/ContentModeSelect';
 
 export default function Loading() {
@@ -9,7 +9,7 @@ export default function Loading() {
       <ContentModeSelect value="all" />
       <MaintenanceSkeleton />
       <EventSkeleton />
-      <NewsTrackerSkeleton />
+      <NewsSkeleton />
     </>
   );
 }

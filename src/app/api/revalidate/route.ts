@@ -2,7 +2,7 @@ import { revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { EVENT_CACHE_TAG } from '@/features/event/model/fetch-event';
 import { MAINTENANCE_CACHE_TAG } from '@/features/maintenance/model/fetch-maintenance';
-import { NEWS_CACHE_TAG } from '@/features/news-tracker/model/news';
+import { NEWS_CACHE_TAG } from '@/features/news/model/fetch-news';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const secret = request.nextUrl.searchParams.get('secret');

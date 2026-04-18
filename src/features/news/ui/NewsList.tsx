@@ -18,7 +18,7 @@ type Props = {
   news: NewsView[];
 };
 
-export default function NewsLists({ news }: Props) {
+export default function NewsList({ news }: Props) {
   const [selectedNews, setSelectedNews] = useState<NewsView | null>(null);
 
   if (news.length === 0) {

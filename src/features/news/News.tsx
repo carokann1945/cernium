@@ -2,9 +2,9 @@ import { Temporal } from '@js-temporal/polyfill';
 import { connection } from 'next/server';
 import { cn } from '@/lib/utils';
 import type { ContentMode } from '../world-filter/model/content-mode';
-import { getCachedNews } from './model/news';
+import { fetchNews } from './model/fetch-news';
 import { toNewsView } from './model/news-utils';
-import NewsTrackerClient from './ui/NewsTrackerClient';
+import NewsClient from './ui/NewsClient';
 
 const KST = 'Asia/Seoul';
 
@@ -12,16 +12,19 @@ type Props = {
   contentMode: ContentMode;
 };
 
-export default async function NewsTracker({ contentMode }: Props) {
+export default async function News({ contentMode }: Props) {
   await connection();
 
-  const rawNews = await getCachedNews(contentMode);
+  const rawNews = await fetchNews(contentMode);
 
   if (rawNews === null) {
     return <p className={cn('w-full', 'mt-10', 'text-center')}>뉴스 데이터를 불러오지 못했습니다.</p>;
   }
 
-  const latestCreatedAt = [...rawNews].map((n) => n.created_at).sort().at(-1);
+  const latestCreatedAt = [...rawNews]
+    .map((n) => n.created_at)
+    .sort()
+    .at(-1);
 
   const lastUpdated = latestCreatedAt
     ? (() => {
@@ -35,5 +38,5 @@ export default async function NewsTracker({ contentMode }: Props) {
     .slice(0, 8)
     .map((n) => toNewsView(n));
 
-  return <NewsTrackerClient news={news} lastUpdated={lastUpdated} />;
+  return <NewsClient news={news} lastUpdated={lastUpdated} />;
 }

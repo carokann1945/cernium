@@ -5,7 +5,7 @@ import type { News } from '../types/news';
 
 export const NEWS_CACHE_TAG = 'news' as const;
 
-export async function getCachedNews(contentMode: ContentMode): Promise<News[] | null> {
+export async function fetchNews(contentMode: ContentMode): Promise<News[] | null> {
   'use cache';
   cacheTag(NEWS_CACHE_TAG);
   cacheLife({ stale: 3600, revalidate: 3600, expire: 86400 });

@@ -4,8 +4,8 @@ import Event from '@/features/event/Event';
 import { EventSkeleton } from '@/features/event/EventSkeleton';
 import Maintenance from '@/features/maintenance/Maintenance';
 import { MaintenanceSkeleton } from '@/features/maintenance/MaintenanceSkeleton';
-import NewsTracker from '@/features/news-tracker/NewsTracker';
-import { NewsTrackerSkeleton } from '@/features/news-tracker/NewsTrackerSkeleton';
+import News from '@/features/news/News';
+import { NewsSkeleton } from '@/features/news/NewsSkeleton';
 import { getContentModeFromCookies } from '@/features/world-filter/model/content-mode-cookie';
 import ContentModeSelect from '@/features/world-filter/ui/ContentModeSelect';
 
@@ -41,8 +41,8 @@ export default async function Home() {
       <Suspense fallback={<EventSkeleton />}>
         <Event contentMode={contentMode} />
       </Suspense>
-      <Suspense fallback={<NewsTrackerSkeleton />}>
-        <NewsTracker contentMode={contentMode} />
+      <Suspense fallback={<NewsSkeleton />}>
+        <News contentMode={contentMode} />
       </Suspense>
     </>
   );

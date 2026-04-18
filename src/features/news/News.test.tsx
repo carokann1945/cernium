@@ -1,10 +1,10 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import NewsTracker from './NewsTracker';
-import { getCachedNews } from './model/news';
+import News from './News';
+import { fetchNews } from './model/fetch-news';
 
-const { newsTrackerClientMock } = vi.hoisted(() => ({
-  newsTrackerClientMock: vi.fn(({ news, lastUpdated }) => (
+const { newsClientMock } = vi.hoisted(() => ({
+  newsClientMock: vi.fn(({ news, lastUpdated }) => (
     <div data-last-updated={lastUpdated}>{news.map((item: { id: string }) => item.id).join(',')}</div>
   )),
 }));
@@ -17,16 +17,16 @@ vi.mock('@/lib/utils', () => ({
   cn: (...inputs: Array<string | false | null | undefined>) => inputs.filter(Boolean).join(' '),
 }));
 
-vi.mock('./model/news', () => ({
-  getCachedNews: vi.fn(),
+vi.mock('./model/fetch-news', () => ({
+  fetchNews: vi.fn(),
 }));
 
 vi.mock('@/lib/cloudinary/fetch', () => ({
   toCloudinaryFetchUrl: vi.fn((src: string | null | undefined) => src ?? null),
 }));
 
-vi.mock('./ui/NewsTrackerClient', () => ({
-  default: newsTrackerClientMock,
+vi.mock('./ui/NewsClient', () => ({
+  default: newsClientMock,
 }));
 
 function createNews(index: number) {
@@ -42,17 +42,17 @@ function createNews(index: number) {
   };
 }
 
-async function renderTracker(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
-  const element = await NewsTracker({ contentMode });
+async function renderNews(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
+  const element = await News({ contentMode });
   return renderToStaticMarkup(element);
 }
 
-describe('NewsTracker', () => {
-  const mockedGetCachedNews = vi.mocked(getCachedNews);
+describe('News', () => {
+  const mockedFetchNews = vi.mocked(fetchNews);
 
   beforeEach(() => {
-    mockedGetCachedNews.mockReset();
-    newsTrackerClientMock.mockClear();
+    mockedFetchNews.mockReset();
+    newsClientMock.mockClear();
   });
 
   afterEach(() => {
@@ -60,20 +60,20 @@ describe('NewsTracker', () => {
   });
 
   it('데이터 조회 실패 시 에러 문구를 렌더링한다', async () => {
-    mockedGetCachedNews.mockResolvedValue(null);
+    mockedFetchNews.mockResolvedValue(null);
 
-    const markup = await renderTracker('classic');
+    const markup = await renderNews('classic');
 
     expect(markup).toContain('뉴스 데이터를 불러오지 못했습니다.');
-    expect(mockedGetCachedNews).toHaveBeenCalledWith('classic');
+    expect(mockedFetchNews).toHaveBeenCalledWith('classic');
   });
 
   it('필터된 뉴스 기준으로 lastUpdated를 계산하고 최신 8개만 전달한다', async () => {
-    mockedGetCachedNews.mockResolvedValue(Array.from({ length: 9 }, (_, index) => createNews(index + 1)));
+    mockedFetchNews.mockResolvedValue(Array.from({ length: 9 }, (_, index) => createNews(index + 1)));
 
-    const markup = await renderTracker('gms');
+    const markup = await renderNews('gms');
 
-    expect(mockedGetCachedNews).toHaveBeenCalledWith('gms');
+    expect(mockedFetchNews).toHaveBeenCalledWith('gms');
     expect(markup).toContain('data-last-updated="2026.04.17"');
     expect(markup).toContain('news-09,news-08,news-07,news-06,news-05,news-04,news-03,news-02');
     expect(markup).not.toContain('news-01');

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { fetchNews, NEWS_CACHE_TAG } from './fetch-news';
 
 const { cacheLifeMock, cacheTagMock, createClientMock, fromMock, orderMock, selectMock } = vi.hoisted(() => {
   const orderMock = vi.fn();
@@ -25,9 +26,7 @@ vi.mock('@/lib/supabase/client', () => ({
   createClient: createClientMock,
 }));
 
-import { getCachedNews, NEWS_CACHE_TAG } from './news';
-
-describe('getCachedNews', () => {
+describe('fetchNews', () => {
   const rows = [
     {
       id: 'news-1',
@@ -78,7 +77,7 @@ describe('getCachedNews', () => {
       error: null,
     });
 
-    const news = await getCachedNews('all');
+    const news = await fetchNews('all');
 
     expect(cacheTagMock).toHaveBeenCalledWith(NEWS_CACHE_TAG);
     expect(cacheLifeMock).toHaveBeenCalledWith({ stale: 3600, revalidate: 3600, expire: 86400 });
@@ -96,7 +95,7 @@ describe('getCachedNews', () => {
       error: null,
     });
 
-    const news = await getCachedNews('gms');
+    const news = await fetchNews('gms');
 
     expect(news?.map((item) => item.id)).toEqual(['news-1', 'news-2']);
   });
@@ -107,7 +106,7 @@ describe('getCachedNews', () => {
       error: null,
     });
 
-    const news = await getCachedNews('classic');
+    const news = await fetchNews('classic');
 
     expect(news?.map((item) => item.id)).toEqual(['news-3']);
   });
@@ -118,7 +117,7 @@ describe('getCachedNews', () => {
       error: null,
     });
 
-    await expect(getCachedNews('all')).resolves.toBeNull();
+    await expect(fetchNews('all')).resolves.toBeNull();
   });
 
   it('Supabase 오류가 나면 console.error를 남기고 null을 반환한다', async () => {
@@ -129,7 +128,7 @@ describe('getCachedNews', () => {
       error: { message: 'boom' },
     });
 
-    await expect(getCachedNews('all')).resolves.toBeNull();
+    await expect(fetchNews('all')).resolves.toBeNull();
     expect(errorSpy).toHaveBeenCalledWith('[news] Supabase query failed:', 'boom');
   });
 });

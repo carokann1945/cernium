@@ -1,7 +1,8 @@
 'use client';
 
 import { Select } from '@base-ui/react/select';
-import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useTransition } from 'react';
 import { cn } from '@/lib/utils';
 import { setContentModeAction } from '../actions/set-content-mode';
 import { CONTENT_MODE_OPTIONS, type ContentMode } from '../model/content-mode';
@@ -11,18 +12,34 @@ type Props = {
 };
 
 function ContentModeSelectField({ value }: Props) {
+  const router = useRouter();
+  const [optimisticValue, setOptimisticValue] = useState(value);
   const [isPending, startTransition] = useTransition();
 
+  useEffect(() => {
+    setOptimisticValue(value);
+  }, [value]);
+
   const handleChange = (newValue: ContentMode | null) => {
-    if (!newValue) return;
+    if (!newValue || newValue === optimisticValue) return;
+
+    const previousValue = optimisticValue;
+    setOptimisticValue(newValue);
+
     startTransition(async () => {
-      const fd = new FormData();
-      fd.set('contentMode', newValue);
-      await setContentModeAction(fd);
+      try {
+        const fd = new FormData();
+        fd.set('contentMode', newValue);
+        await setContentModeAction(fd);
+        router.refresh();
+      } catch {
+        setOptimisticValue(previousValue);
+      }
     });
   };
 
-  const selectedLabel = CONTENT_MODE_OPTIONS.find((option) => option.value === value)?.label ?? value;
+  const selectedLabel =
+    CONTENT_MODE_OPTIONS.find((option) => option.value === optimisticValue)?.label ?? optimisticValue;
 
   return (
     <div className="relative font-glegoo">
@@ -30,7 +47,7 @@ function ContentModeSelectField({ value }: Props) {
         Game Version
       </span>
 
-      <Select.Root value={value} onValueChange={handleChange}>
+      <Select.Root value={optimisticValue} onValueChange={handleChange}>
         <Select.Trigger
           disabled={isPending}
           className="group flex min-w-[130px] cursor-pointer items-center justify-between gap-4 rounded-sm border border-white/40 bg-custom-nav-bg px-4 py-2 text-main-white disabled:cursor-not-allowed disabled:opacity-50">

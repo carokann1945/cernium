@@ -15,6 +15,7 @@ vi.mock('next/server', () => ({
 
 vi.mock('@/lib/utils', () => ({
   cn: (...inputs: Array<string | false | null | undefined>) => inputs.filter(Boolean).join(' '),
+  pad: (n: number) => String(n).padStart(2, '0'),
 }));
 
 vi.mock('./model/fetch-news', () => ({

@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import Event from '@/features/event/Event';
+import EventServer from '@/features/event/EventServer';
 import { EventSkeleton } from '@/features/event/EventSkeleton';
-import Maintenance from '@/features/maintenance/Maintenance';
+import MaintenanceServer from '@/features/maintenance/MaintenanceServer';
 import { MaintenanceSkeleton } from '@/features/maintenance/MaintenanceSkeleton';
-import News from '@/features/news/News';
+import NewsServer from '@/features/news/NewsServer';
 import { NewsSkeleton } from '@/features/news/NewsSkeleton';
 import { getContentModeFromCookies } from '@/features/world-filter/model/content-mode-cookie';
 import ContentModeSelect from '@/features/world-filter/ui/ContentModeSelect';
@@ -36,13 +36,13 @@ export default async function Home() {
     <>
       <ContentModeSelect value={contentMode} />
       <Suspense fallback={<MaintenanceSkeleton />}>
-        <Maintenance contentMode={contentMode} />
+        <MaintenanceServer contentMode={contentMode} />
       </Suspense>
       <Suspense fallback={<EventSkeleton />}>
-        <Event contentMode={contentMode} />
+        <EventServer contentMode={contentMode} />
       </Suspense>
       <Suspense fallback={<NewsSkeleton />}>
-        <News contentMode={contentMode} />
+        <NewsServer contentMode={contentMode} />
       </Suspense>
     </>
   );

@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import EventPage from './Event';
+import EventServer from './EventServer';
 import { fetchEvent } from './model/fetch-event';
 import type { Event } from './types/event';
 
@@ -47,7 +47,7 @@ function createEvent(overrides: Partial<Event> = {}): Event {
 }
 
 async function renderEvent(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
-  const element = await EventPage({ contentMode });
+  const element = await EventServer({ contentMode });
   return renderToStaticMarkup(element);
 }
 

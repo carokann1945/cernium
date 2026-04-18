@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { connection } from 'next/server';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import Maintenance from './Maintenance';
+import Maintenance from './MaintenanceServer';
 import { fetchMaintenance } from './model/fetch-maintenance';
 import type { Maintenance as MaintenanceType } from './types/maintenance';
 

@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import News from './News';
+import NewsServer from './NewsServer';
 import { fetchNews } from './model/fetch-news';
 
 const { newsClientMock } = vi.hoisted(() => ({
@@ -43,7 +43,7 @@ function createNews(index: number) {
 }
 
 async function renderNews(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
-  const element = await News({ contentMode });
+  const element = await NewsServer({ contentMode });
   return renderToStaticMarkup(element);
 }
 

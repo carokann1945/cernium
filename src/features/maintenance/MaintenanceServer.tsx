@@ -47,7 +47,7 @@ type Props = {
   contentMode: ContentMode;
 };
 
-export default async function Maintenance({ contentMode }: Props) {
+export default async function MaintenanceServer({ contentMode }: Props) {
   await connection();
   const maintenances = await fetchMaintenance(contentMode);
 

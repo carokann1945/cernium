@@ -12,7 +12,7 @@ type Props = {
   contentMode: ContentMode;
 };
 
-export default async function News({ contentMode }: Props) {
+export default async function NewsServer({ contentMode }: Props) {
   await connection();
 
   const rawNews = await fetchNews(contentMode);

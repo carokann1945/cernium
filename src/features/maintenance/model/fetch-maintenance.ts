@@ -1,6 +1,6 @@
 import { cacheTag, cacheLife } from 'next/cache';
 import { createClient } from '@/lib/supabase/client';
-import { filterByContentMode, type ContentMode } from '../../world-filter/model/content-mode';
+import { filterByGameVersion, type GameVersion } from '../../game-version/model/game-version';
 import type { Maintenance } from '../types/maintenance';
 
 export const MAINTENANCE_CACHE_TAG = 'maintenance' as const;
@@ -20,7 +20,7 @@ function normalizeIso(s: string | null): string | null {
   return s.replace(' ', 'T').replace(/([+-]\d{2})$/, '$1:00');
 }
 
-export async function fetchMaintenance(contentMode: ContentMode): Promise<Maintenance[] | null> {
+export async function fetchMaintenance(gameVersion: GameVersion): Promise<Maintenance[] | null> {
   'use cache';
   cacheTag(MAINTENANCE_CACHE_TAG);
   cacheLife({ stale: 3600, revalidate: 3600, expire: 86400 });
@@ -43,5 +43,5 @@ export async function fetchMaintenance(contentMode: ContentMode): Promise<Mainte
     end_at: row.end_at ? normalizeIso(row.end_at) : null,
   }));
 
-  return filterByContentMode(normalized, contentMode);
+  return filterByGameVersion(normalized, gameVersion);
 }

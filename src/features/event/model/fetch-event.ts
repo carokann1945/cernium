@@ -1,11 +1,11 @@
 import { cacheTag, cacheLife } from 'next/cache';
 import { createClient } from '@/lib/supabase/client';
-import { filterByContentMode, type ContentMode } from '../../world-filter/model/content-mode';
+import { filterByGameVersion, type GameVersion } from '../../game-version/model/game-version';
 import type { Event } from '../types/event';
 
 export const EVENT_CACHE_TAG = 'events_v2' as const;
 
-export async function fetchEvent(contentMode: ContentMode): Promise<Event[] | null> {
+export async function fetchEvent(gameVersion: GameVersion): Promise<Event[] | null> {
   'use cache';
   cacheTag(EVENT_CACHE_TAG);
   cacheLife({ stale: 3600, revalidate: 3600, expire: 86400 });
@@ -18,5 +18,5 @@ export async function fetchEvent(contentMode: ContentMode): Promise<Event[] | nu
     return null;
   }
 
-  return data ? filterByContentMode(data as Event[], contentMode) : null;
+  return data ? filterByGameVersion(data as Event[], gameVersion) : null;
 }

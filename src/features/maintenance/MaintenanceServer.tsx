@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { connection } from 'next/server';
 import { DAY_ABBRS } from '@/constants/time';
 import { cn, pad } from '@/lib/utils';
-import type { ContentMode } from '../world-filter/model/content-mode';
+import type { GameVersion } from '../game-version/model/game-version';
 import { fetchMaintenance } from './model/fetch-maintenance';
 import type { MaintenanceWithStatus } from './types/maintenance';
 
@@ -44,12 +44,12 @@ function formatPeriodKst(startIso: string | null, endIso: string | null): string
 }
 
 type Props = {
-  contentMode: ContentMode;
+  gameVersion: GameVersion;
 };
 
-export default async function MaintenanceServer({ contentMode }: Props) {
+export default async function MaintenanceServer({ gameVersion }: Props) {
   await connection();
-  const maintenances = await fetchMaintenance(contentMode);
+  const maintenances = await fetchMaintenance(gameVersion);
 
   if (maintenances === null) {
     return <p className={cn('w-full', 'mt-2', 'text-center', 'text-sm')}>점검 데이터를 불러오지 못했습니다. (500)</p>;

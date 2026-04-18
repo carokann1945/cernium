@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { connection } from 'next/server';
 import { cn } from '@/lib/utils';
-import type { ContentMode } from '../world-filter/model/content-mode';
+import type { GameVersion } from '../game-version/model/game-version';
 import { fetchNews } from './model/fetch-news';
 import { toNewsView } from './model/news-utils';
 import NewsClient from './ui/NewsClient';
@@ -9,13 +9,13 @@ import NewsClient from './ui/NewsClient';
 const KST = 'Asia/Seoul';
 
 type Props = {
-  contentMode: ContentMode;
+  gameVersion: GameVersion;
 };
 
-export default async function NewsServer({ contentMode }: Props) {
+export default async function NewsServer({ gameVersion }: Props) {
   await connection();
 
-  const rawNews = await fetchNews(contentMode);
+  const rawNews = await fetchNews(gameVersion);
 
   if (rawNews === null) {
     return <p className={cn('w-full', 'mt-10', 'text-center')}>뉴스 데이터를 불러오지 못했습니다.</p>;

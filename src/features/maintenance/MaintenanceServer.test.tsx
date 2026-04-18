@@ -36,8 +36,8 @@ function createMaintenance(overrides: Partial<MaintenanceType> = {}): Maintenanc
   };
 }
 
-async function renderMaintenance(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
-  const element = await Maintenance({ contentMode });
+async function renderMaintenance(gameVersion: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
+  const element = await Maintenance({ gameVersion });
   return renderToStaticMarkup(element);
 }
 

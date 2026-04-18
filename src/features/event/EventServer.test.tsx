@@ -46,8 +46,8 @@ function createEvent(overrides: Partial<Event> = {}): Event {
   };
 }
 
-async function renderEvent(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
-  const element = await EventServer({ contentMode });
+async function renderEvent(gameVersion: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
+  const element = await EventServer({ gameVersion });
   return renderToStaticMarkup(element);
 }
 

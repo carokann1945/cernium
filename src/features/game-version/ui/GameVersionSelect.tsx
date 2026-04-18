@@ -4,14 +4,14 @@ import { Select } from '@base-ui/react/select';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 import { cn } from '@/lib/utils';
-import { setContentModeAction } from '../actions/set-content-mode';
-import { CONTENT_MODE_OPTIONS, type ContentMode } from '../model/content-mode';
+import { setGameVersionAction } from '../actions/set-game-version';
+import { GAME_VERSION_OPTIONS, type GameVersion } from '../model/game-version';
 
 type Props = {
-  value: ContentMode;
+  value: GameVersion;
 };
 
-function ContentModeSelectField({ value }: Props) {
+function GameVersionSelectField({ value }: Props) {
   const router = useRouter();
   const [optimisticValue, setOptimisticValue] = useState(value);
   const [isPending, startTransition] = useTransition();
@@ -20,7 +20,7 @@ function ContentModeSelectField({ value }: Props) {
     setOptimisticValue(value);
   }, [value]);
 
-  const handleChange = (newValue: ContentMode | null) => {
+  const handleChange = (newValue: GameVersion | null) => {
     if (!newValue || newValue === optimisticValue) return;
 
     const previousValue = optimisticValue;
@@ -29,8 +29,8 @@ function ContentModeSelectField({ value }: Props) {
     startTransition(async () => {
       try {
         const fd = new FormData();
-        fd.set('contentMode', newValue);
-        await setContentModeAction(fd);
+        fd.set('gameVersion', newValue);
+        await setGameVersionAction(fd);
         router.refresh();
       } catch {
         setOptimisticValue(previousValue);
@@ -38,8 +38,7 @@ function ContentModeSelectField({ value }: Props) {
     });
   };
 
-  const selectedLabel =
-    CONTENT_MODE_OPTIONS.find((option) => option.value === optimisticValue)?.label ?? optimisticValue;
+  const selectedLabel = GAME_VERSION_OPTIONS.find((option) => option.value === optimisticValue)?.label ?? optimisticValue;
 
   return (
     <div className="relative font-glegoo">
@@ -71,7 +70,7 @@ function ContentModeSelectField({ value }: Props) {
                 'data-[ending-style]:scale-y-95 data-[ending-style]:opacity-0',
               )}>
               <Select.List className="cursor-pointer">
-                {CONTENT_MODE_OPTIONS.map((option) => (
+                {GAME_VERSION_OPTIONS.map((option) => (
                   <Select.Item
                     key={option.value}
                     value={option.value}
@@ -93,10 +92,10 @@ function ContentModeSelectField({ value }: Props) {
   );
 }
 
-export default function ContentModeSelect({ value }: Props) {
+export default function GameVersionSelect({ value }: Props) {
   return (
     <section className="mx-auto mt-6 flex max-w-[1252px] px-4 xl:px-0">
-      <ContentModeSelectField value={value} />
+      <GameVersionSelectField value={value} />
     </section>
   );
 }

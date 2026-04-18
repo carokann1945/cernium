@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import EventServer from '@/features/event/EventServer';
 import { EventSkeleton } from '@/features/event/EventSkeleton';
+import { getGameVersionFromCookies } from '@/features/game-version/model/game-version-cookie';
+import GameVersionSelect from '@/features/game-version/ui/GameVersionSelect';
 import MaintenanceServer from '@/features/maintenance/MaintenanceServer';
 import { MaintenanceSkeleton } from '@/features/maintenance/MaintenanceSkeleton';
 import NewsServer from '@/features/news/NewsServer';
 import { NewsSkeleton } from '@/features/news/NewsSkeleton';
-import { getContentModeFromCookies } from '@/features/world-filter/model/content-mode-cookie';
-import ContentModeSelect from '@/features/world-filter/ui/ContentModeSelect';
 
 export const metadata: Metadata = {
   keywords: ['메이플 이벤트', '메이플 점검', '메이플 일정', '메이플 이벤트 정리'],
@@ -30,19 +30,19 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const contentMode = await getContentModeFromCookies();
+  const gameVersion = await getGameVersionFromCookies();
 
   return (
     <>
-      <ContentModeSelect value={contentMode} />
+      <GameVersionSelect value={gameVersion} />
       <Suspense fallback={<MaintenanceSkeleton />}>
-        <MaintenanceServer contentMode={contentMode} />
+        <MaintenanceServer gameVersion={gameVersion} />
       </Suspense>
       <Suspense fallback={<EventSkeleton />}>
-        <EventServer contentMode={contentMode} />
+        <EventServer gameVersion={gameVersion} />
       </Suspense>
       <Suspense fallback={<NewsSkeleton />}>
-        <NewsServer contentMode={contentMode} />
+        <NewsServer gameVersion={gameVersion} />
       </Suspense>
     </>
   );

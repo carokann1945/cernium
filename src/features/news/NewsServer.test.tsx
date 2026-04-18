@@ -42,8 +42,8 @@ function createNews(index: number) {
   };
 }
 
-async function renderNews(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
-  const element = await NewsServer({ contentMode });
+async function renderNews(gameVersion: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
+  const element = await NewsServer({ gameVersion });
   return renderToStaticMarkup(element);
 }
 

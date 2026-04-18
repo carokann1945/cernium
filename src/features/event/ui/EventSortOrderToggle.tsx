@@ -13,7 +13,7 @@ type Props = {
   onChange: (order: SortOrder) => void;
 };
 
-export function SortOrderToggle({ value, onChange }: Props) {
+export function EventSortOrderToggle({ value, onChange }: Props) {
   return (
     <div className={cn('flex gap-1', 'bg-custom-nav-bg rounded-lg', 'ml-3 sm:ml-0 p-1')}>
       {SORT_OPTIONS.map(({ value: optionValue, label }) => (

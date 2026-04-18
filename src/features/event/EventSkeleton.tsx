@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 
-export function PeriodTrackerSkeleton() {
+export function EventSkeleton() {
   return (
     <section className="mx-auto mt-[60px] flex max-w-[1252px] flex-col gap-6">
       <div className="h-10 w-44 animate-pulse rounded bg-white/10" />

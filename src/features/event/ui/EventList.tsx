@@ -6,21 +6,19 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { OngoingEventView } from '../types/event';
 
-const importSummaryModal = () => import('./SummaryModal');
-const importSummaryMarkdown = () => import('./SummaryMarkdown');
+const importEventModal = () => import('./EventModal');
 
-const prefetchSummaryModal = () => {
-  void importSummaryModal();
-  void importSummaryMarkdown();
+const prefetchEventModal = () => {
+  void importEventModal();
 };
 
-const SummaryModal = dynamic(importSummaryModal, { ssr: false });
+const EventModal = dynamic(importEventModal, { ssr: false });
 
 type Props = {
   events: OngoingEventView[];
 };
 
-export default function EventLists({ events }: Props) {
+export default function EventList({ events }: Props) {
   const [selectedEvent, setSelectedEvent] = useState<OngoingEventView | null>(null);
 
   if (events.length === 0) {
@@ -76,8 +74,8 @@ export default function EventLists({ events }: Props) {
               {event.summary && (
                 <button
                   type="button"
-                  onMouseEnter={prefetchSummaryModal}
-                  onFocus={prefetchSummaryModal}
+                  onMouseEnter={prefetchEventModal}
+                  onFocus={prefetchEventModal}
                   onClick={() => setSelectedEvent(event)}
                   className={cn(
                     'cursor-pointer px-[10px] py-[2px] bg-custom-lightgray rounded-sm border border-gray-500',
@@ -92,7 +90,7 @@ export default function EventLists({ events }: Props) {
         ))}
       </ul>
 
-      {selectedEvent && <SummaryModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
+      {selectedEvent && <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
     </section>
   );
 }

@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import { sortOngoingEvents } from '../model/event-utils';
 import type { OngoingEventView, SortOrder } from '../types/event';
-import EventLists from './EventLists';
-import EventPeriodChart from './EventPeriodChart';
-import { SortOrderToggle } from './SortOrderToggle';
+import EventChart from './EventChart';
+import EventList from './EventList';
+import { EventSortOrderToggle } from './EventSortOrderToggle';
 
 type Props = {
   events: OngoingEventView[];
   initialNowIso: string;
 };
 
-export default function PeriodTrackerClient({ events, initialNowIso }: Props) {
+export default function EventClient({ events, initialNowIso }: Props) {
   const [sortOrder, setSortOrder] = useState<SortOrder>('latest');
   const sorted = sortOngoingEvents(events, sortOrder);
 
@@ -21,11 +21,11 @@ export default function PeriodTrackerClient({ events, initialNowIso }: Props) {
       <section className="max-w-[1252px] flex flex-col gap-[8px] bg-custom-bg select-none mt-[70px] mx-auto">
         <div className="flex flex-col items-start sm:flex-row sm:items-center gap-[16px]">
           <h2 className="text-2xl text-main-white font-bold pl-4 xl:pl-0">진행 중 이벤트</h2>
-          <SortOrderToggle value={sortOrder} onChange={setSortOrder} />
+          <EventSortOrderToggle value={sortOrder} onChange={setSortOrder} />
         </div>
-        <EventPeriodChart events={sorted} initialNowIso={initialNowIso} />
+        <EventChart events={sorted} initialNowIso={initialNowIso} />
       </section>
-      <EventLists events={sorted} />
+      <EventList events={sorted} />
     </>
   );
 }

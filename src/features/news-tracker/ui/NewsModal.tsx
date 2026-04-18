@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import type { NewsView } from '../types/news';
 
-const SummaryMarkdown = dynamic(() => import('@/features/period-tracker/ui/SummaryMarkdown'), { ssr: false });
+const MarkdownRenderer = dynamic(() => import('@/components/markdown/MarkdownRenderer'), { ssr: false });
 
 type Props = {
   news: NewsView;
@@ -81,7 +81,7 @@ export default function NewsModal({ news, onClose }: Props) {
 
           <div className={cn('min-w-0 space-y-3')}>
             <div className={cn('space-y-4 text-sm')}>
-              <SummaryMarkdown value={news.translation} />
+              <MarkdownRenderer value={news.translation} />
             </div>
           </div>
         </div>

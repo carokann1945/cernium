@@ -1,12 +1,10 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useEffect } from 'react';
+import MarkdownRenderer from '@/components/markdown/MarkdownRenderer';
 import { cn } from '@/lib/utils';
 import type { OngoingEventView } from '../types/event';
-
-const SummaryMarkdown = dynamic(() => import('./SummaryMarkdown'), { ssr: false });
 
 type Props = {
   event: OngoingEventView;
@@ -26,7 +24,7 @@ function formatDate(value: string | null) {
   }).format(date);
 }
 
-export default function SummaryModal({ event, onClose }: Props) {
+export default function EventModal({ event, onClose }: Props) {
   useEffect(() => {
     history.pushState({ modal: true }, '');
     document.body.style.overflow = 'hidden';
@@ -104,7 +102,7 @@ export default function SummaryModal({ event, onClose }: Props) {
 
           <div className={cn('min-w-0 space-y-3')}>
             <div className={cn('space-y-4 text-sm')}>
-              <SummaryMarkdown value={event.summary} />
+              <MarkdownRenderer value={event.summary} />
             </div>
           </div>
         </div>

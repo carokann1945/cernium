@@ -59,7 +59,7 @@ function formatRemainingLabel(diffMs: number) {
   return `${minutes}분`;
 }
 
-export default function EventPeriodChart({ events, initialNowIso }: Props) {
+export default function EventChart({ events, initialNowIso }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const initialNow = useMemo(

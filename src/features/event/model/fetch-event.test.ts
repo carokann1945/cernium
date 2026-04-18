@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { EVENT_CACHE_TAG, fetchEvent } from './fetch-event';
 
 const { cacheLifeMock, cacheTagMock, createClientMock, fromMock, orderMock, selectMock } = vi.hoisted(() => {
   const orderMock = vi.fn();
@@ -25,9 +26,7 @@ vi.mock('@/lib/supabase/client', () => ({
   createClient: createClientMock,
 }));
 
-import { EVENTS_CACHE_TAG, getCachedEvents } from './events';
-
-describe('getCachedEvents', () => {
+describe('fetchEvent', () => {
   const rows = [
     {
       id: 'event-1',
@@ -81,9 +80,9 @@ describe('getCachedEvents', () => {
       error: null,
     });
 
-    const events = await getCachedEvents('all');
+    const events = await fetchEvent('all');
 
-    expect(cacheTagMock).toHaveBeenCalledWith(EVENTS_CACHE_TAG);
+    expect(cacheTagMock).toHaveBeenCalledWith(EVENT_CACHE_TAG);
     expect(cacheLifeMock).toHaveBeenCalledWith({ stale: 3600, revalidate: 3600, expire: 86400 });
     expect(createClientMock).toHaveBeenCalledTimes(1);
     expect(fromMock).toHaveBeenCalledWith('events_v2');
@@ -98,7 +97,7 @@ describe('getCachedEvents', () => {
       error: null,
     });
 
-    const events = await getCachedEvents('gms');
+    const events = await fetchEvent('gms');
 
     expect(events?.map((item) => item.id)).toEqual(['event-1', 'event-2']);
   });
@@ -109,7 +108,7 @@ describe('getCachedEvents', () => {
       error: null,
     });
 
-    const events = await getCachedEvents('classic');
+    const events = await fetchEvent('classic');
 
     expect(events?.map((item) => item.id)).toEqual(['event-3']);
   });
@@ -120,7 +119,7 @@ describe('getCachedEvents', () => {
       error: null,
     });
 
-    await expect(getCachedEvents('all')).resolves.toBeNull();
+    await expect(fetchEvent('all')).resolves.toBeNull();
   });
 
   it('Supabase 오류가 나면 console.error를 남기고 null을 반환한다', async () => {
@@ -131,7 +130,7 @@ describe('getCachedEvents', () => {
       error: { message: 'boom' },
     });
 
-    await expect(getCachedEvents('all')).resolves.toBeNull();
+    await expect(fetchEvent('all')).resolves.toBeNull();
     expect(errorSpy).toHaveBeenCalledWith('[events_v2] Supabase query failed:', 'boom');
   });
 });

@@ -1,10 +1,11 @@
+// 이벤트, 뉴스 한글 번역 마크다운 전용 렌더러
 'use client';
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { cn } from '@/lib/utils';
 
-export default function SummaryMarkdown({ value }: { value: string | null }) {
+export default function MarkdownRenderer({ value }: { value: string | null }) {
   if (!value?.trim()) {
     return <p className={cn('text-sm text-custom-lightgray')}>요약본 데이터가 없어요</p>;
   }

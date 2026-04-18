@@ -107,7 +107,7 @@ KST 변환 / 진행 상태 계산
 src/
 ├── app/                     # 페이지 및 레이아웃 (Next.js App Router)
 ├── features/
-│   ├── period-tracker/      # 진행 중 이벤트 타임라인 & 카드
+│   ├── event/               # 진행 중 이벤트 타임라인 & 카드
 │   └── maintenance-tracker/ # 점검 일정 리스트
 ├── components/layout/       # 공통 헤더·푸터
 └── lib/supabase/            # Supabase 클라이언트
@@ -247,7 +247,7 @@ pnpm build
 
 <br />
 
-초기 Lighthouse 측정에서는 LCP가 3.4초로 권장 지표보다 거의 1초나 넘어가는 수치로 나왔습니다. 처음에는 한글 요약 모달에 포함된 마크다운 렌더링 번들이 원인이라고 보고 SummaryModal을 next/dynamic으로 분리해 지연 로딩을 적용했습니다. 또한 버튼 hover 시점에 사전 로딩되도록 구성해 초기 번들 크기를 줄였습니다
+초기 Lighthouse 측정에서는 LCP가 3.4초로 권장 지표보다 거의 1초나 넘어가는 수치로 나왔습니다. 처음에는 한글 요약 모달에 포함된 마크다운 렌더링 번들이 원인이라고 보고 EventModal을 next/dynamic으로 분리해 지연 로딩을 적용했습니다. 또한 버튼 hover 시점에 사전 로딩되도록 구성해 초기 번들 크기를 줄였습니다
 
 하지만 실제로 더 큰 영향을 주고 있던 부분은 타임라인 차트의 썸네일 이미지였습니다. 타임라인 차트는 처음에 CSS background-image로 썸네일을 표시하고 있었는데, 이 방식은 next/image 최적화 대상이 아니라 원본 JPG가 그대로 로드되어 LCP에 악영향을 주고 있었습니다
 

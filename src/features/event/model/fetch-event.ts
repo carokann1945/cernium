@@ -3,11 +3,11 @@ import { createClient } from '@/lib/supabase/client';
 import { filterByContentMode, type ContentMode } from '../../world-filter/model/content-mode';
 import type { Event } from '../types/event';
 
-export const EVENTS_CACHE_TAG = 'events_v2' as const;
+export const EVENT_CACHE_TAG = 'events_v2' as const;
 
-export async function getCachedEvents(contentMode: ContentMode): Promise<Event[] | null> {
+export async function fetchEvent(contentMode: ContentMode): Promise<Event[] | null> {
   'use cache';
-  cacheTag(EVENTS_CACHE_TAG);
+  cacheTag(EVENT_CACHE_TAG);
   cacheLife({ stale: 3600, revalidate: 3600, expire: 86400 });
 
   const supabase = createClient();

@@ -1,4 +1,4 @@
-export function MaintenanceTrackerSkeleton() {
+export function MaintenanceSkeleton() {
   return (
     <section className="mx-auto mt-10 flex max-w-[1252px] flex-col gap-4">
       <div className="h-7 w-44 animate-pulse rounded bg-white/10" />

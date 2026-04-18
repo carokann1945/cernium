@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Event from '@/features/event/Event';
 import { EventSkeleton } from '@/features/event/EventSkeleton';
-import MaintenanceTracker from '@/features/maintenance-tracker/MaintenanceTracker';
-import { MaintenanceTrackerSkeleton } from '@/features/maintenance-tracker/MaintenanceTrackerSkeleton';
+import Maintenance from '@/features/maintenance/Maintenance';
+import { MaintenanceSkeleton } from '@/features/maintenance/MaintenanceSkeleton';
 import NewsTracker from '@/features/news-tracker/NewsTracker';
 import { NewsTrackerSkeleton } from '@/features/news-tracker/NewsTrackerSkeleton';
 import { getContentModeFromCookies } from '@/features/world-filter/model/content-mode-cookie';
@@ -35,8 +35,8 @@ export default async function Home() {
   return (
     <>
       <ContentModeSelect value={contentMode} />
-      <Suspense fallback={<MaintenanceTrackerSkeleton />}>
-        <MaintenanceTracker contentMode={contentMode} />
+      <Suspense fallback={<MaintenanceSkeleton />}>
+        <Maintenance contentMode={contentMode} />
       </Suspense>
       <Suspense fallback={<EventSkeleton />}>
         <Event contentMode={contentMode} />

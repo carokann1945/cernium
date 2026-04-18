@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/client';
 import { filterByContentMode, type ContentMode } from '../../world-filter/model/content-mode';
 import type { Maintenance } from '../types/maintenance';
 
-export const MAINTENANCES_CACHE_TAG = 'maintenances' as const;
+export const MAINTENANCE_CACHE_TAG = 'maintenance' as const;
 
 type RawRow = {
   id: string;
@@ -20,15 +20,15 @@ function normalizeIso(s: string | null): string | null {
   return s.replace(' ', 'T').replace(/([+-]\d{2})$/, '$1:00');
 }
 
-export async function getCachedMaintenances(contentMode: ContentMode): Promise<Maintenance[] | null> {
+export async function fetchMaintenance(contentMode: ContentMode): Promise<Maintenance[] | null> {
   'use cache';
-  cacheTag(MAINTENANCES_CACHE_TAG);
+  cacheTag(MAINTENANCE_CACHE_TAG);
   cacheLife({ stale: 3600, revalidate: 3600, expire: 86400 });
 
   const supabase = createClient();
   const { data, error } = await supabase.from('maintenance_v2').select('*').order('live_date', { ascending: false });
   if (error) {
-    console.error('[maintenances] Supabase query failed:', error.message);
+    console.error('[maintenance] Supabase query failed:', error.message);
     return null;
   }
 

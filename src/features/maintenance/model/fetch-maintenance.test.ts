@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { MAINTENANCE_CACHE_TAG, fetchMaintenance } from './fetch-maintenance';
 
 const { cacheLifeMock, cacheTagMock, createClientMock, fromMock, orderMock, selectMock } = vi.hoisted(() => {
   const orderMock = vi.fn();
@@ -25,9 +26,7 @@ vi.mock('@/lib/supabase/client', () => ({
   createClient: createClientMock,
 }));
 
-import { MAINTENANCES_CACHE_TAG, getCachedMaintenances } from './maintenances';
-
-describe('getCachedMaintenances', () => {
+describe('fetchMaintenance', () => {
   const rows = [
     {
       id: 'maintenance-1',
@@ -75,9 +74,9 @@ describe('getCachedMaintenances', () => {
       error: null,
     });
 
-    const maintenances = await getCachedMaintenances('all');
+    const maintenances = await fetchMaintenance('all');
 
-    expect(cacheTagMock).toHaveBeenCalledWith(MAINTENANCES_CACHE_TAG);
+    expect(cacheTagMock).toHaveBeenCalledWith(MAINTENANCE_CACHE_TAG);
     expect(cacheLifeMock).toHaveBeenCalledWith({ stale: 3600, revalidate: 3600, expire: 86400 });
     expect(createClientMock).toHaveBeenCalledTimes(1);
     expect(fromMock).toHaveBeenCalledWith('maintenance_v2');
@@ -121,7 +120,7 @@ describe('getCachedMaintenances', () => {
       error: null,
     });
 
-    const maintenances = await getCachedMaintenances('gms');
+    const maintenances = await fetchMaintenance('gms');
 
     expect(maintenances?.map((item) => item.id)).toEqual(['maintenance-1', 'maintenance-2']);
   });
@@ -132,7 +131,7 @@ describe('getCachedMaintenances', () => {
       error: null,
     });
 
-    const maintenances = await getCachedMaintenances('classic');
+    const maintenances = await fetchMaintenance('classic');
 
     expect(maintenances?.map((item) => item.id)).toEqual(['maintenance-3']);
   });
@@ -143,7 +142,7 @@ describe('getCachedMaintenances', () => {
       error: null,
     });
 
-    await expect(getCachedMaintenances('all')).resolves.toBeNull();
+    await expect(fetchMaintenance('all')).resolves.toBeNull();
   });
 
   it('Supabase 오류가 나면 console.error를 남기고 null을 반환한다', async () => {
@@ -154,7 +153,7 @@ describe('getCachedMaintenances', () => {
       error: { message: 'boom' },
     });
 
-    await expect(getCachedMaintenances('all')).resolves.toBeNull();
-    expect(errorSpy).toHaveBeenCalledWith('[maintenances] Supabase query failed:', 'boom');
+    await expect(fetchMaintenance('all')).resolves.toBeNull();
+    expect(errorSpy).toHaveBeenCalledWith('[maintenance] Supabase query failed:', 'boom');
   });
 });

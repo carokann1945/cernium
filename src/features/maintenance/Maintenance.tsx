@@ -3,7 +3,7 @@ import { connection } from 'next/server';
 import { DAY_ABBRS } from '@/constants/time';
 import { cn, pad } from '@/lib/utils';
 import type { ContentMode } from '../world-filter/model/content-mode';
-import { getCachedMaintenances } from './model/maintenances';
+import { fetchMaintenance } from './model/fetch-maintenance';
 import type { MaintenanceWithStatus } from './types/maintenance';
 
 function isUpcoming(endIso: string | null, now: Temporal.Instant): boolean {
@@ -47,9 +47,9 @@ type Props = {
   contentMode: ContentMode;
 };
 
-export default async function MaintenanceTracker({ contentMode }: Props) {
+export default async function Maintenance({ contentMode }: Props) {
   await connection();
-  const maintenances = await getCachedMaintenances(contentMode);
+  const maintenances = await fetchMaintenance(contentMode);
 
   if (maintenances === null) {
     return <p className={cn('w-full', 'mt-2', 'text-center', 'text-sm')}>점검 데이터를 불러오지 못했습니다. (500)</p>;

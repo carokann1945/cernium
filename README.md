@@ -95,7 +95,7 @@ KST 변환 / 진행 상태 계산
 ```
 
 - 공식 공지 데이터는 [gms-tracker](https://github.com/carokann1945/gms-tracker)에서 수집, 정규화, 번역한 뒤 Supabase에 적재하고 이 앱은 `events_v2`, `maintenance_v2`를 조회해 화면에 보여주는 구조로 설계했습니다
-- 데이터가 갱신되면 `/api/revalidate`가 `events_v2`, `maintenances` 캐시 태그를 무효화해 화면에 최신 데이터를 반영합니다
+- 데이터가 갱신되면 `/api/revalidate`가 `events_v2`, `maintenance` 캐시 태그를 무효화해 화면에 최신 데이터를 반영합니다
 - 메인 페이지는 서버 컴포넌트에서 데이터를 불러와 KST 기준으로 가공한 뒤 타임라인, 이벤트 카드, 점검 일정 UI로 렌더링합니다
 - 즉 이 저장소는 조회·가공·표시에 집중하고, 수집 방식과 번역 파이프라인의 상세 구현은 `gms-tracker` 저장소에서 확인할 수 있습니다
 
@@ -108,7 +108,8 @@ src/
 ├── app/                     # 페이지 및 레이아웃 (Next.js App Router)
 ├── features/
 │   ├── event/               # 진행 중 이벤트 타임라인 & 카드
-│   └── maintenance-tracker/ # 점검 일정 리스트
+│   ├── maintenance/         # 점검 일정 리스트
+│   └── news/                # 이벤트, 점검 제외한 나머지 공지 카드
 ├── components/layout/       # 공통 헤더·푸터
 └── lib/supabase/            # Supabase 클라이언트
 ```

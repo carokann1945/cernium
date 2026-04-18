@@ -2,9 +2,9 @@ import { Temporal } from '@js-temporal/polyfill';
 import { connection } from 'next/server';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import MaintenanceTracker from './MaintenanceTracker';
-import { getCachedMaintenances } from './model/maintenances';
-import type { Maintenance } from './types/maintenance';
+import Maintenance from './Maintenance';
+import { fetchMaintenance } from './model/fetch-maintenance';
+import type { Maintenance as MaintenanceType } from './types/maintenance';
 
 vi.mock('next/server', () => ({
   connection: vi.fn(),
@@ -19,11 +19,11 @@ vi.mock('@/lib/utils', () => ({
   pad: (n: number) => String(n).padStart(2, '0'),
 }));
 
-vi.mock('./model/maintenances', () => ({
-  getCachedMaintenances: vi.fn(),
+vi.mock('./model/fetch-maintenance', () => ({
+  fetchMaintenance: vi.fn(),
 }));
 
-function createMaintenance(overrides: Partial<Maintenance> = {}): Maintenance {
+function createMaintenance(overrides: Partial<MaintenanceType> = {}): MaintenanceType {
   return {
     id: 'maintenance-1',
     name: 'Scheduled Maintenance',
@@ -36,19 +36,19 @@ function createMaintenance(overrides: Partial<Maintenance> = {}): Maintenance {
   };
 }
 
-async function renderTracker(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
-  const element = await MaintenanceTracker({ contentMode });
+async function renderMaintenance(contentMode: 'all' | 'gms' | 'classic' = 'all'): Promise<string> {
+  const element = await Maintenance({ contentMode });
   return renderToStaticMarkup(element);
 }
 
-describe('MaintenanceTracker', () => {
+describe('Maintenance', () => {
   const mockedConnection = vi.mocked(connection);
-  const mockedGetCachedMaintenances = vi.mocked(getCachedMaintenances);
+  const mockedFetchMaintenance = vi.mocked(fetchMaintenance);
 
   beforeEach(() => {
     mockedConnection.mockReset();
     mockedConnection.mockResolvedValue(undefined);
-    mockedGetCachedMaintenances.mockReset();
+    mockedFetchMaintenance.mockReset();
     vi.spyOn(Temporal.Now, 'instant').mockReturnValue(Temporal.Instant.from('2026-04-10T03:00:00Z'));
   });
 
@@ -57,17 +57,17 @@ describe('MaintenanceTracker', () => {
   });
 
   it('데이터 조회 실패 시 에러 문구를 렌더링한다', async () => {
-    mockedGetCachedMaintenances.mockResolvedValue(null);
+    mockedFetchMaintenance.mockResolvedValue(null);
 
-    const markup = await renderTracker('classic');
+    const markup = await renderMaintenance('classic');
 
     expect(markup).toContain('점검 데이터를 불러오지 못했습니다. (500)');
     expect(mockedConnection).toHaveBeenCalledTimes(1);
-    expect(mockedGetCachedMaintenances).toHaveBeenCalledWith('classic');
+    expect(mockedFetchMaintenance).toHaveBeenCalledWith('classic');
   });
 
   it('진행 예정이거나 진행 중인 점검이 없으면 빈 상태 문구를 렌더링한다', async () => {
-    mockedGetCachedMaintenances.mockResolvedValue([
+    mockedFetchMaintenance.mockResolvedValue([
       createMaintenance({
         id: 'ended-maintenance',
         name: 'Already Finished',
@@ -82,16 +82,16 @@ describe('MaintenanceTracker', () => {
       }),
     ]);
 
-    const markup = await renderTracker('gms');
+    const markup = await renderMaintenance('gms');
 
     expect(markup).toContain('진행 예정이거나 진행 중인 점검이 없습니다');
     expect(markup).not.toContain('Already Finished');
     expect(markup).not.toContain('Missing Start Date');
-    expect(mockedGetCachedMaintenances).toHaveBeenCalledWith('gms');
+    expect(mockedFetchMaintenance).toHaveBeenCalledWith('gms');
   });
 
   it('진행 중, 예정, 잘못된 날짜 문자열을 현재 동작대로 렌더링한다', async () => {
-    mockedGetCachedMaintenances.mockResolvedValue([
+    mockedFetchMaintenance.mockResolvedValue([
       createMaintenance({
         id: 'ongoing-maintenance',
         name: 'Ongoing Maintenance',
@@ -121,7 +121,7 @@ describe('MaintenanceTracker', () => {
       }),
     ]);
 
-    const markup = await renderTracker();
+    const markup = await renderMaintenance();
 
     expect(markup).toContain('Ongoing Maintenance');
     expect(markup).toContain('Upcoming Maintenance');
@@ -137,6 +137,6 @@ describe('MaintenanceTracker', () => {
     expect(markup).toContain('href="https://www.nexon.com/maplestory/news/maintenance/ongoing"');
     expect(markup).toContain('href="https://www.nexon.com/maplestory/news/maintenance/upcoming"');
     expect(markup).toContain('href="#"');
-    expect(mockedGetCachedMaintenances).toHaveBeenCalledWith('all');
+    expect(mockedFetchMaintenance).toHaveBeenCalledWith('all');
   });
 });

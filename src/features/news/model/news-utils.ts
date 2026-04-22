@@ -16,7 +16,7 @@ export function toNewsView(news: News): NewsView {
       const today = Temporal.Now.plainDateISO('Asia/Seoul');
       const liveDate = zdt.toPlainDate();
       const diffDays = liveDate.until(today).days;
-      isNew = diffDays >= 0 && diffDays <= 6;
+      isNew = diffDays >= 0 && diffDays <= 2;
     } catch {
       liveDateKst = '-';
     }

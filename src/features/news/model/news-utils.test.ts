@@ -54,7 +54,7 @@ describe('toNewsView', () => {
     expect(result.liveDateKst).toBe('2026.04.16(목)');
   });
 
-  it('오늘 기준 0~6일 전 뉴스는 isNew가 true이다', () => {
+  it('오늘 기준 0~2일 전 뉴스는 isNew가 true이다', () => {
     // today = 2026-04-16, live_date = 2026-04-10 → diffDays = 6
     const result = toNewsView(createNews({ live_date: '2026-04-10T00:00:00Z' }));
 
